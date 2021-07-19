@@ -1,0 +1,19 @@
+---
+- name: Prepare
+  hosts: all
+
+  pre_tasks:
+    - name: Install packages
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - epel-release
+        - cronie
+  tasks:
+    - name: "Include grid role"
+      include_role:
+        name: "grid"
+      vars:
+        grid_vos:
+          - cms

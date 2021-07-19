@@ -1,0 +1,21 @@
+---
+- name: Create LSC Files
+  copy:
+    dest: "{{ grid_security_dir }}/vomsdir/{{ vo }}/{{ item.hostname }}.lsc"
+    content: |
+      {{ item.dn }}
+      {{ item.ca_dn }}
+    mode: "0644"
+  loop: "{{ voinfo[vo] }}"
+  loop_control:
+    label: "{{ vo }}-{{ item.hostname }}"
+
+- name: Create vomses files
+  copy:
+    dest: "{{ grid_vomses_dir }}/{{ vo }}-{{ item.hostname }}"
+    content: >
+       "{{ vo }}" "{{ item.hostname }}" "{{ item.port }}" "{{ item.dn }}" "{{ vo }}"
+    mode: "0644"
+  loop: "{{ voinfo[vo] }}"
+  loop_control:
+    label: "{{ vo }}-{{ item.hostname }}"

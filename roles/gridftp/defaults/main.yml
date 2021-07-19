@@ -1,0 +1,7 @@
+---
+# defaults file for gridftp role
+role_gridftp_port_start: 50000
+role_gridftp_port_end: 51000
+grid_host_certificate: []
+role_gridftp_datainterface:
+role_gridftp_vmp:

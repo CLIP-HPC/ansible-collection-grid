@@ -1,0 +1,17 @@
+---
+# defaults file for hephy.cvmfs
+cvmfs_manage_yumrepo: false
+cvmfs_yumrepo_enabled: true
+cvmfs_yumrepo_testing_enabled: false
+cvmfs_yumrepo_config_enabled: false
+cvmfs_yumrepo_priority: 10
+cvmfs_manage_cvmfs_user: true
+cvmfs_mount_repositories: autofs
+cvmfs_http_proxy:
+  - DIRECT
+cvmfs_quota_limit: 0
+cvmfs_quota_ratio: 0.85
+cvmfs_cache_base: /var/cache/cvmfs
+cvmfs_repositories: []
+cvmfs_domains: []
+cvmfs_config: {}

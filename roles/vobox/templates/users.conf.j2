@@ -1,0 +1,3 @@
+{% for account in role_vobox_accounts %}
+{{ account.uid }}:{{ account.name }}:{{ account.primary_gid }},{{ account.secondary_gid }}:{{ account.primary_group }},{{ account.secondary_group }}:{{ account.vo }}:sgm:
+{% endfor %}

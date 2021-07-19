@@ -1,0 +1,38 @@
+---
+# tasks file for role-eosxd
+- name: Check variables
+  assert:
+    that:
+      - "role_eosxd_mgmt_alias is defined"
+      - "role_eosxd_mount_point is defined"
+
+- include_tasks: repos.yml
+
+- name: Create config folder
+  file:
+    state: directory
+    path: "/etc/eos"
+    mode: "0755"
+
+- name: Configure eosxd
+  template:
+    src: fuse.eos.conf
+    dest: /etc/eos/fuse.eos.conf
+    mode: "0644"
+
+- name: Add eos.keytab file
+  template:
+    src: eos.keytab.j2
+    dest: "{{ role_eosxd_sss_keytab_file }}"
+    mode: "0400"
+    owner: root
+    group: root
+
+
+- name: Add/remove /etc/fstab entry
+  mount:
+    path: "{{ role_eosxd_mount_point }}"
+    src: eosxd
+    opts: fsname=eos
+    state: "{{ role_eosxd_fstab_state }}"
+    fstype: fuse

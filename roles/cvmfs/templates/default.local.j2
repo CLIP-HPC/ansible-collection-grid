@@ -1,0 +1,23 @@
+{{ ansible_managed | comment }}
+
+{% if cvmfs_quota_limit > 0 %}
+CVMFS_QUOTA_LIMIT={{ cvmfs_quota_limit }}
+{% else %}
+CVMFS_QUOTA_LIMIT={{ __cvmfs_partition_size * cvmfs_quota_factor | int }}
+{% endif %}
+
+{% if cvmfs_memcache_size | default(false) %}
+CVMFS_MEMCACHE_SIZE={{ cvmfs_memcache_size }}
+{% endif %}
+
+CVMFS_HTTP_PROXY='{{ cvmfs_http_proxy | join(';') }}'
+
+CVMFS_CACHE_BASE='{{ cvmfs_cache_base }}'
+
+{% if cvmfs_repositories | default(false) %}
+CVMFS_REPOSITORIES='{{ cvmfs_repositories | map(attribute='name') | join(',') }}'
+{% endif %}
+
+{% for key, value in cvmfs_config.items() %}
+{{ key }}={{ value }}
+{% endfor %}

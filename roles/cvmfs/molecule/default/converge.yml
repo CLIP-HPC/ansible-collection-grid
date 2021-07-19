@@ -1,0 +1,15 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include cvmfs role"
+      include_role:
+        name: "cvmfs"
+      vars:
+        cvmfs_manage_yumrepo: true
+        cvmfs_quota_limit: 4000
+        cvmfs_mount_repositories: mount
+        cvmfs_repositories:
+          - name: cms.cern.ch
+            env_vars:
+              CMS_LOCAL_SITE: /cvmfs/cms.cern.ch/SITECONF/T2_AT_Vienna

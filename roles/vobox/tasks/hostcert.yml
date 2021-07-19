@@ -1,0 +1,22 @@
+---
+- name: Create /etc/grid-security folder
+  file:
+    state: directory
+    path: /etc/grid-security/
+    mode: 0755
+
+- name: Install host certificate
+  copy:
+    src: "{{ grid_host_certificate.cert }}"
+    dest: "/etc/grid-security/hostcert.pem"
+    setype: etc_t
+    remote_src: "{{ grid_host_certificate.remote_src | default(false) }}"
+    mode: 0644
+
+- name: Install host private key
+  copy:
+    src: "{{ grid_host_certificate.key }}"
+    dest: "/etc/grid-security/hostkey.pem"
+    setype: etc_t
+    mode: 0400
+    remote_src: "{{ grid_host_certificate.remote_src | default(false) }}"

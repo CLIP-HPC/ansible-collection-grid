@@ -1,0 +1,8 @@
+{% if htcondor_ce_spool_dir is defined %}SPOOL = {{ htcondor_ce_spool_dir }}
+{% endif %}
+{% if htcondor_ce_tcp_forwarding_host is defined %}# required because HTCondor Compute Element will advertise public NAT IP
+TCP_FORWARDING_HOST={{ htcondor_ce_tcp_forwarding_host }}
+{% endif %}
+{% if htcondor_ce_private_network_name is defined %}PRIVATE_NETWORK_NAME={{ htcondor_ce_private_network_name }}
+{% endif %}
+PRIVATE_NETWORK_INTERFACE={{ ansible_default_ipv4.interface }}

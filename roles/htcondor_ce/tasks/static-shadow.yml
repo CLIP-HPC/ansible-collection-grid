@@ -1,0 +1,11 @@
+---
+- name: Install static shadow packages
+  package:
+    name: condor-static-shadow
+    state: present
+
+- name: Configure static shadows
+  copy:
+    content: "SHADOW = $(SBIN)/condor_shadow_s\n"
+    dest: etc/condor/config.d/41_ce_shadow.conf
+    mode: "0644"

@@ -1,0 +1,21 @@
+{{ ansible_managed | comment }}
+##############################################################################
+#
+# HTCondor-CE BDII/GLUE Publication configuration file.
+#
+##############################################################################
+
+# For multi-CE sites, only one CE publishes certain values.
+{% if htcondor_ce_election_hosts | length > 1 %}
+HTCONDORCE_BDII_ELECTION = ZOOKEEPER
+HTCONDORCE_BDII_ZKHOSTS  = {{ htcondor_ce_election_hosts | sort | join(',')  }}
+{% else %}
+HTCONDORCE_BDII_ELECTION = LEADER
+HTCONDORCE_BDII_LEADER   = {{ htcondor_ce_election_hosts[0] }}
+{% endif %}
+
+# BDII Static Info and VOs
+HTCONDORCE_VONames = {{ grid_vos | sort | join(', ') }}
+HTCONDORCE_SiteName = {{ grid_site_name }}
+HTCONDORCE_HEPSPEC_INFO = {{ htcondor_ce_benchmark_result }}
+HTCONDORCE_CORES = {{ htcondor_ce_execution_env_cores }} # cores per node

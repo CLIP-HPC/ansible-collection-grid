@@ -1,0 +1,27 @@
+---
+- name: Install fetch-crl
+  package:
+    name: fetch-crl
+    state: present
+
+- name: Configure fetch-crl
+  template:
+    src: fetch-crl.conf.j2
+    dest: /etc/fetch-crl.conf
+    mode: "0644"
+
+- name: Initial run of fetch-crl
+  command: /usr/sbin/fetch-crl
+  changed_when: false
+  failed_when: false
+
+- name: Enable fetch-crl systemd boot service
+  service:
+    name: fetch-crl-boot
+    enabled: true
+
+- name: Enable fetch-crl systemd cron job
+  service:
+    name: fetch-crl-cron
+    enabled: true
+    state: started

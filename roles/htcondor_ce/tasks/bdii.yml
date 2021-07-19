@@ -1,0 +1,18 @@
+---
+- name: Install BDII
+  package:
+    name: htcondor-ce-bdii
+
+- name: Configure BDII
+  template:
+    src: ce-bdii.conf.j2
+    dest: /etc/condor-ce/config.d/06-ce-bdii.conf
+    mode: "0644"
+  notify: reconfigure htcondor_ce
+
+- name: Start BDII
+  service:
+    name: bdii
+    state: started
+    enabled: true
+  register: service_bdii

@@ -1,0 +1,12 @@
+---
+# tasks file for htcondor-ce role
+- name: Install repositories
+  include_tasks: repos.yml
+  when: htcondor_ce_repo_install
+
+- name: Install HTCondor CE
+  include_tasks: htcondor-ce.yml
+
+- name: Install BDII
+  include_tasks: bdii.yml
+  when: htcondor_ce_enable_bdii

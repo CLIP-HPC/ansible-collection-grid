@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+{% for account in poolaccounts %}
+{%   if account.number is defined %}
+"{{ account.fqan }}/Capability=NULL" .{{ account.name[:-4] }}
+"{{ account.fqan }}" .{{ account.name[:-4] }}
+{%   else %}
+"{{ account.fqan }}/Capability=NULL" {{ account.name }}
+"{{ account.fqan }}" {{ account.name }}
+{%   endif %}
+{% endfor %}

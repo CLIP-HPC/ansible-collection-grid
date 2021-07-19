@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  role_name: grid
+  namespace: clip
+  author: Dietrich Liko
+  description: Common installation of repositories, certificates and voms for WLCG/LCG site.
+  company: Institute for High Energy Physics, Austrian Academy of Sciences
+  issue_tracker_url: https://gitlab.cern.ch/hephyvienna/ansible/role-grid/issues
+  license: MIT
+  min_ansible_version: 2.7
+  platforms:
+    - name: EL
+      versions:
+        - 6
+        - 7
+  galaxy_tags: []
+dependencies: []

@@ -1,0 +1,82 @@
+---
+- name: Install pkgs
+  yum:
+    name:
+      - 'htcondor-ce-client'
+      - "htcondor-ce-view"
+      - "htcondor-ce"
+      - "htcondor-ce-{{ htcondor_ce_batch_system }}"
+      - "lcmaps"
+    state: installed
+
+
+- name: Configure HTCondor CE
+  template:
+    src: "{{ item.src }}"
+    dest: "/etc/condor-ce/{{ item.dest }}"
+    mode: "0644"
+  loop:
+    - src: job-routes.conf.j2
+      dest: config.d/60-job-routes.conf
+    - src: condor_mapfile.j2
+      dest: condor_mapfile
+    - src: local.conf.j2
+      dest: config.d/99-local.conf
+  notify: reconfigure htcondor_ce
+
+- name: Disable WN proxy renewal
+  lineinfile:
+    state: present
+    line: "{{ item.line }}"
+    regex: "{{ item.regex }}"
+    path: /usr/libexec/condor/glite/etc/batch_gahp.config
+  loop:
+    - line: blah_disable_wn_proxy_renewal=yes
+      regex: '^blah_disable_wn_proxy_renewal'
+    - line: blah_delegate_renewed_proxies=no
+      regex: '^blah_delegate_renewed_proxies'
+    - line: blah_disable_limited_proxy=yes
+      regex: '^blah_disable_limited_proxy'
+    - line: "blah_shared_directories={{ htcondor_ce_shared_dir | unique | join(':') }}"
+      regex: '^blah_shared_directories'
+
+- name: Copy slurm_local_submit_attributes.sh customization
+  file:
+    src: slurm_local_submit_attributes.sh
+    dest: /usr/libexec/condor/glite/bin/
+    mode: "0755"
+
+- name: Configure HTCondor CE sysconfig
+  template:
+    src: condor-ce.sysconfig.j2
+    dest: /etc/sysconfig/condor-ce
+    mode: "0644"
+  notify: restart htcondor_ce
+
+- name: Enable static shadow
+  include_tasks: static-shadow.yml
+  when: htcondor_ce_enable_static_shadow
+
+- name: Create condor spool directory
+  file:
+    state: directory
+    group: condor
+    owner: condor
+    mode: "0755"
+    path: "{{ htcondor_ce_spool_dir }}"
+  when: htcondor_ce_spool_dir is defined
+
+- name: Enable argus authorisation
+  include_tasks: auth-argus.yml
+  when: htcondor_ce_auth == 'argus'
+
+- name: Enable lcmaps authorisation
+  include_tasks: auth-lcmaps.yml
+  when: htcondor_ce_auth == 'lcmaps'
+
+- name: Start HTCondor CE
+  service:
+    name: condor-ce
+    state: started
+    enabled: true
+  register: service_condor_ce

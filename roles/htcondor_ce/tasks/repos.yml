@@ -1,0 +1,20 @@
+---
+- name: Install stable repository
+  yum_repository:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    baseurl: "{{ item.baseurl }}"
+    enabled: "{{ item.enabled }}"
+    gpgcheck: true
+    gpgkey: http://research.cs.wisc.edu/htcondor/yum/RPM-GPG-KEY-HTCondor
+  loop:
+    - name: htcondor-stable
+      description: "HTCondor Stable RPM Repository for Redhat Enterprise Linux {{ ansible_distribution_major_version }}"
+      baseurl: "https://research.cs.wisc.edu/htcondor/yum/stable/8.8/rhel{{ ansible_distribution_major_version }}"
+      enabled: true
+    - name: htcondor-development
+      description: "HTCondor Development RPM Repository for Redhat Enterprise Linux {{ ansible_distribution_major_version }}"
+      baseurl: "https://research.cs.wisc.edu/htcondor/yum/development/rhel{{ ansible_distribution_major_version }}"
+      enabled: "{{ htcondor_ce_repo_development_enable }}"
+  loop_control:
+    label: "{{ item.name }}"

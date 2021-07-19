@@ -1,0 +1,24 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+  flake8
+platforms:
+  - name: "instance-${INSTANCE_ID:-local}"
+    image: ${MOLECULE_IMAGE:-centos:7}
+    privileged: true
+    # devices:
+    #   - /dev/fuse
+    # capabilities:
+    #   - SYS_ADMIN
+provisioner:
+  name: ansible
+scenario:
+  name: default
+verifier:
+  name: testinfra

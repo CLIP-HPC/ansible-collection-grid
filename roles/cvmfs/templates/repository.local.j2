@@ -1,0 +1,13 @@
+{{ ansible_managed | comment }}
+
+{% if 'config' in repository %}
+{%     for var, val in repository.config.items() %}
+{{ var }}={{ val }}
+{%     endfor %}
+{% endif %}
+
+{% if 'env_vars' in repository %}
+{%     for var, val in repository.env_vars.items() %}
+export {{ var }}={{ val }}
+{%     endfor %}
+{% endif %}

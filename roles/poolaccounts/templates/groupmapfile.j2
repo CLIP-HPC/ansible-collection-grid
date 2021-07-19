@@ -1,0 +1,5 @@
+{{ ansible_managed | comment }}
+{% for account in poolaccounts %}
+"{{ account.fqan }}/Capability=NULL" {{ account.group }}
+"{{ account.fqan }}" {{ account.group }}
+{% endfor %}

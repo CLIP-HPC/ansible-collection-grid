@@ -1,0 +1,27 @@
+---
+- name: Create configuration directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  loop:
+    - "{{ grid_security_dir }}/vomsdir"
+    - "{{ grid_vomses_dir }}"
+
+- name: Create configuration directories for the VOs
+  file:
+    path: "{{ grid_security_dir }}/vomsdir/{{ item }}"
+    state: directory
+    mode: 0755
+  loop: "{{ grid_vos }}"
+
+- name: Read VO info
+  include_vars:
+    file: voinfo.yml
+    name: voinfo
+
+- name: Configure VOs
+  include_tasks: configure-vo.yml
+  loop: "{{ grid_vos }}"
+  loop_control:
+    loop_var: vo

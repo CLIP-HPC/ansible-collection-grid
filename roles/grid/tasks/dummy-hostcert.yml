@@ -1,0 +1,58 @@
+---
+- name: Copy CA certificate
+  copy:
+    src: "{{ grid_dummy_ca.crt }}"
+    dest: /etc/grid-security/certificates/DummyCA.pem
+    mode: "0644"
+
+- name: Create link
+  file:
+    src: DummyCA.pem
+    dest: "/etc/grid-security/certificates/{{ grid_dummy_ca.hash }}.0"
+    state: link
+
+- name: Generate dummy hostcertificate
+  block:
+
+    - name: Create private dir
+      file:
+        path: /etc/grid-security/private
+        state: directory
+        mode: 0600
+
+    - name: Copy CA key
+      copy:
+        src: "{{ grid_dummy_ca.key }}"
+        dest: /etc/grid-security/private/DummyCA.key
+        mode: 0600
+
+    - name: Generate private key
+      command: openssl genrsa -out /etc/grid-security/hostkey.pem 2048
+      args:
+        creates: /etc/grid-security/hostkey.pem
+
+    - name: Set the mode of the private key
+      file:
+        path: /etc/grid-security/hostkey.pem
+        mode: 0400
+
+    - name: Generate certificate request
+      command: >
+        openssl req -new -sha256
+        -key /etc/grid-security/hostkey.pem
+        -subj "{{ grid_dummy_ca.cn + ansible_fqdn }}"
+        -out /etc/grid-security/hostcert.csr
+      args:
+        creates: /etc/grid-security/hostcert.csr
+
+    - name: Sign the certificate request
+      command: >
+        openssl x509 -req -in /etc/grid-security/hostcert.csr
+        -CA /etc/grid-security/certificates/DummyCA.pem
+        -CAkey /etc/grid-security/private/DummyCA.key
+        -out /etc/grid-security/hostcert.pem -sha256
+        -set_serial {{ 1000000 | random(seed=inventory_hostname) }}
+      args:
+        creates: /etc/grid-security/hostcert.pem
+
+  when: grid_dummy_host_certificate != 'caonly'

@@ -1,0 +1,33 @@
+---
+# tasks regarding repo handling
+- name: Enable EPEL
+  package:
+    name: epel-release
+    state: "{{ (role_eosxd_epel_upstream) | ternary('present', 'absent') }}"
+  notify: yum-clean-metadata
+
+- name: Add upstream EOS Citrine repo
+  yum_repository:
+    name: eos-citrine
+    description: EOS 4.0 Citrine repop
+    state: "{{ (role_eosxd_eos_upstream) | ternary('present', 'absent') }}"
+    baseurl: https://storage-ci.web.cern.ch/storage-ci/eos/citrine/tag/el-7/x86_64/
+    gpgcheck: false
+  notify: yum-clean-metadata
+
+- name: Add upstream EOS Citrine dev repo
+  yum_repository:
+    name: eos-citrine-dev
+    description: EOS 4.0 Citrine repop
+    gpgcheck: false
+    state: "{{ (role_eosxd_eos_upstream) | ternary('present', 'absent') }}"
+    baseurl: https://storage-ci.web.cern.ch/storage-ci/eos/citrine-depend/el-7/x86_64/
+  notify: yum-clean-metadata
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Install eos-fusex
+  package:
+    name: eos-fusex
+    state: installed

@@ -1,0 +1,27 @@
+#############################################################################
+GROUPS_CONF=/root/groups.conf
+USERS_CONF=/root/users.conf
+
+SITE_NAME={{ role_vobox_sitename }}
+
+VOBOX_HOST={{ role_vobox_host | default(inventory_hostname) }}
+WMS_HOST=required.but.unused
+PX_HOST=myproxy.cern.ch
+BDII_HOST=lcg-bdii.cern.ch
+SE_LIST={{ role_vobox_storage_element }} 
+
+CONFIG_USERS={{ (role_vobox_create_user | bool) | ternary('yes','no') }}
+
+#SE_LIST=my-se.my-domain   # required, but unused on an ALICE VOBOX
+
+VOS="{{ role_vobox_vos | join (' ') }}"
+
+{% for vo in role_vobox_vos %}
+VO_{{ vo | upper }}_SW_DIR=.   # a dot value means YAIM should skip it (CVMFS is used instead)
+VO_{{ vo | upper }}_DEFAULT_SE=my-se.my-domain
+VO_{{ vo | upper }}_VOMS_SERVERS="{{ role_vobox_vo_dict[vo].voms_servers }}"
+VO_{{ vo | upper }}_VOMSES="\
+{{ role_vobox_vo_dict[vo].vomses }}"
+VO_{{ vo | upper }}_VOMS_CA_DN="\
+{{ role_vobox_vo_dict[vo].voms_ca_dn }}"
+{% endfor %}

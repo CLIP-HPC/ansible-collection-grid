@@ -1,0 +1,63 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  pre_tasks:
+    - name: Install pip
+      package:
+        name:
+          - python2-cryptography
+          - initscripts
+          - policycoreutils
+        state: installed
+
+  tasks:
+    - name: Create /etc/grid-security/certificates folder
+      file:
+        state: directory
+        path: /etc/grid-security/certificates
+        mode: 0644
+
+    - name: Create key for dummy CA
+      openssl_privatekey:
+        path: /root/DummyCA.key
+        size: 2048
+
+    - name: Generate an OpenSSL Certificate Signing Request
+      openssl_csr:
+        path: /root/DummyCA.csr
+        privatekey_path: /root/DummyCA.key
+        common_name: grid.vbc.ac.at
+
+    - name: Create a dummy root CA
+      openssl_certificate:
+        path: /etc/grid-security/certificates/DummyCA.pem
+        privatekey_path: /root/DummyCA.key
+        csr_path: /root/DummyCA.csr
+        provider: selfsigned
+
+    - name: Create /srv/certificates folder
+      file:
+        state: directory
+        path: /srv/certificates
+        mode: 0600
+
+    - name: Create key for hostcert
+      openssl_privatekey:
+        path: /srv/certificates/host.key
+        size: 2048
+
+
+    - name: Generate an OpenSSL Certificate Signing Request
+      openssl_csr:
+        path: /srv/certificates/host.csr
+        privatekey_path: /srv/certificates/host.key
+        common_name: vobox.grid.vbc.ac.at
+
+    - name: Create certificate for hostcert
+      openssl_certificate:
+        path: /srv/certificates/host.crt
+        csr_path: /srv/certificates/host.csr
+        ownca_path: /etc/grid-security/certificates/DummyCA.pem
+        ownca_privatekey_path: /root/DummyCA.key
+        provider: ownca

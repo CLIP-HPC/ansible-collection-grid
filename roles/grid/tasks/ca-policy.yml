@@ -1,0 +1,25 @@
+---
+- name: Install IGTF CA Repository
+  yum_repository:
+    name: carepo
+    description: IGTF CA Repository
+    baseurl: http://repository.egi.eu/sw/production/cas/1/current/
+    enabled: true
+    gpgcheck: true
+    gpgkey: file:///etc/pki/rpm-gpg/GPG-KEY-EUGridPMA-RPM-3
+
+- name: Install EUGridPMA gpgkey
+  copy:
+    src: GPG-KEY-EUGridPMA-RPM-3
+    dest: /etc/pki/rpm-gpg/GPG-KEY-EUGridPMA-RPM-3
+    mode: "0644"
+
+- name: Import EUGridPMA gpgkey
+  rpm_key:
+    state: present
+    key: /etc/pki/rpm-gpg/GPG-KEY-EUGridPMA-RPM-3
+
+- name: Install CAs
+  package:
+    name: "{{ grid_ca_polices_pkgs }}"
+    state: present

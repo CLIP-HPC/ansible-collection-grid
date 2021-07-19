@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+/var/log/cleanup-grid-accounts.log {
+  weekly
+  rotate 30
+  missingok
+  compress
+  copytruncate
+}

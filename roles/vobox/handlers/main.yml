@@ -1,0 +1,5 @@
+---
+# handlers file for vobox role
+
+- name: Configure VOBOX
+  shell: "/opt/glite/yaim/bin/yaim -c -s /root/site-info.def -n VOBOX"  # noqa 305

@@ -1,0 +1,54 @@
+---
+# tasks file for gridftp role
+- name: Configure xrootd-dsi repo
+  yum_repository:
+    name: "XROOTD-DSI"
+    description: "XROOTD-DSI repository"
+    baseurl: "https://storage-ci.web.cern.ch/storage-ci/xrootd-dsi/tag/cc-7/x86_64/"
+    enabled: true
+    gpgcheck: false
+
+- name: Install packages
+  yum:
+    name:
+      - yum-priorities
+      - globus-gridftp-server
+      - globus-gridftp-server-progs
+      - globus-proxy-utils
+      - xrootd-client-4.12.4-1.el7
+      - xrootd-dsi
+    state: installed
+
+- include_tasks: lcmaps.yml
+
+- name: Create gridftp.d folder
+  file:
+    state: directory
+    path: /etc/gridftp.d
+    mode: "0755"
+
+- name: Create gridftp log folder
+  file:
+    state: directory
+    path: /var/log/gridftp
+    mode: "0755"
+
+- name: Template gridftp config
+  template:
+    src: grid.conf.j2
+    dest: /etc/gridftp.conf
+    mode: "0644"
+  notify: Restart gridftp-server
+
+- name: template xrootd-gridftp-server sysconfig file
+  template:
+    src: xrootd-gridftp-server.j2
+    dest: /etc/sysconfig/xrootd-gridftp-server
+    mode: "0644"
+  notify: Restart gridftp-server
+
+- name: Make sure that xrootd-gridftp is enabled and running
+  service:
+    name: xrootd-gridftp
+    state: started
+    enabled: true

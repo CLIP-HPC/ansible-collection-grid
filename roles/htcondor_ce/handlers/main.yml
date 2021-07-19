@@ -1,0 +1,10 @@
+---
+# handlers file for hephyvienna.htcondor-ce
+- name: reconfigure htcondor_ce
+  command: /usr/bin/condor_ce_reconfig
+  when: not service_bdii.changed | default(true) or not service_condor_ce
+
+- name: restart htcondor_ce
+  service:
+    name: condor-ce
+    state: restarted

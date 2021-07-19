@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  role_name: vobox
+  namespace: clip
+  author: Uemit Seren <uemit.seren@gmi.oeaw.ac.at>
+  description: Common installation of a WLCG VOBOX
+  company: Institute for High Energy Physics, Austrian Academy of Sciences
+  issue_tracker_url: https://github.com/clip-hpc/ansible-role-vobox/issues
+  license: MIT
+  min_ansible_version: 2.7
+  platforms:
+    - name: EL
+      versions:
+        - 7
+  galaxy_tags: []
+dependencies: []

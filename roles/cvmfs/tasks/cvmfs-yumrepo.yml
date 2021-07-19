@@ -1,0 +1,42 @@
+---
+- name: Install CVMFS repository
+  yum_repository:
+    name: cvmfs
+    description: "CVMFS yum repository for el{{ ansible_distribution_major_version }}"
+    baseurl: "{{ cvmfs_yumrepo_url }}"
+    enabled: "{{ cvmfs_yumrepo_enabled }}"
+    gpgcheck: true
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM
+    priority: "{{ cvmfs_yumrepo_priority }}"
+
+- name: Install CVMFS testing repository
+  yum_repository:
+    name: cvmfs-testing
+    description: "CVMFS yum testing repository for el{{ ansible_distribution_major_version }}"
+    baseurl: "{{ cvmfs_yumrepo_testing_url }}"
+    enabled: "{{ cvmfs_yumrepo_testing_enabled }}"
+    gpgcheck: true
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM
+    priority: "{{ cvmfs_yumrepo_priority }}"
+
+- name: Install CVMFS config repository
+  yum_repository:
+    name: cvmfs-config
+    description: "CVMFS yum config repository for el{{ ansible_distribution_major_version }}"
+    baseurl: "{{ cvmfs_yumrepo_config_url }}"
+    enabled: "{{ cvmfs_yumrepo_config_enabled }}"
+    gpgcheck: true
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM
+    priority: "{{ cvmfs_yumrepo_priority }}"
+
+
+- name: Install CernVM gpgkey
+  copy:
+    src: RPM-GPG-KEY-CernVM
+    dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM
+    mode: "0644"
+
+- name: Enable CernVM gpgkey
+  rpm_key:
+    state: present
+    key: /etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM

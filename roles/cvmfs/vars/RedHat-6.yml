@@ -1,0 +1,5 @@
+---
+cvmfs_yumrepo_url: http://cern.ch/cvmrepo/yum/cvmfs/EL/6/x86_64
+cvmfs_yumrepo_testing_url: http://cern.ch/cvmrepo/yum/cvmfs-testing/EL/6/x86_64
+cvmfs_yumrepo_config_url: http://cern.ch/cvmrepo/yum/cvmfs-config/EL/6/x86_64
+cvmfs_fuse_group: true
