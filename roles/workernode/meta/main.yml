@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  role_name: workernode
+  namespace: clip
+  author: Dietrich Liko
+  description: Configure an EGI/WLCG worker node or user interface
+  company: Institite for High Energy Physics, Austrian Academy of Sciencs
+  issue_tracker_url: https://gitlab.cern.ch/hephyvienna/ansible/role-workernode/issues
+  license: MIT
+  min_ansible_version: 2.7
+  platforms:
+    - name: EL
+      versions:
+        - 6
+        - 7
+  galaxy_tags: []
+dependencies: []

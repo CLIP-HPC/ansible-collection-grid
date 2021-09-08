@@ -1,0 +1,36 @@
+---
+# tasks file for hephyvienna.workernode
+- name: Include OS specific variables
+  include_vars: "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+
+- name: Install packages
+  package:
+    name: "{{ workernode_ui_pkgs if workernode_ui else workernode_wn_pkgs }}"
+    state: present
+
+- name: Install HEP_OSlibs
+  package:
+    name: "{{ workernode_hepos_pkgs }}"
+    state: present
+
+- name: Configure grid wn/ui
+  template:
+    src: "gridenv.{{ item }}.j2"
+    dest: "/etc/profile.d/gridenv.{{ item }}"
+    mode: "0644"
+  loop:
+    - sh
+    - csh
+
+- name: Install HTCondor CE client
+  block:
+
+    - name: Install HTCondor repo
+      include_tasks: repo-htcondor.yml
+
+    - name: Install HTCondor CE Client packages
+      package:
+        name: htcondor-ce-client
+        state: present
+
+  when: workernode_install_htc_ce_client

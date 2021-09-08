@@ -1,0 +1,10 @@
+---
+# os specific vars file for hephy.repo-wlcg
+workernode_hepos_pkgs:
+  - HEP_OSlibs_SL6
+workernode_java_home: /usr/lib/jvm/java-1.8.0-openjdk.x86_64
+
+workernode_ui_pkgs:
+  - emi-ui
+workernode_wn_pkgs:
+  - emi-wn

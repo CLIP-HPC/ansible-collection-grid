@@ -1,0 +1,10 @@
+---
+# defaults file for hephyvienna.workernode
+workernode_ui: false
+workernode_install_hepos: true
+workernode_myproxy_server: myproxy.cern.ch
+workernode_lcg_gfal_infosys: lcg-bdii.cern.ch:2170
+workernode_bdii_list: lcg-bdii.cern.ch:2170
+workernode_install_htc_ce_client: true
+workernode_htcondor_dev_repo_enable: false
+workernode_env_vars: {}
