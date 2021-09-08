@@ -49,3 +49,25 @@
     state: present
     key: "/etc/pki/rpm-gpg/{{ item }}"
   loop: "{{ grid_umd_repo_rpmgpgkeys }}"
+
+
+- name: Install WLCG repository
+  yum_repository:
+    name: wlcg
+    description: WLCG repoitory
+    baseurl: "{{ grid_repo_wlcg_url }}"
+    enabled: "{{ grid_repo_wlcg_enabled }}"
+    gpgcheck: true
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-wlcg
+    priority: "{{ grid_repo_wlcg_priority }}"
+
+- name: Copy WLCG gpgkey
+  copy:
+    src: RPM-GPG-KEY-wlcg
+    dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-wlcg
+    mode: "0644"
+
+- name: Import WLCG gpgkey
+  rpm_key:
+    state: present
+    key: /etc/pki/rpm-gpg/RPM-GPG-KEY-wlcg

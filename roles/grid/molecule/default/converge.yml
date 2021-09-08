@@ -15,5 +15,5 @@
         grid_vos:
           - cms
           - alice
-          - belle
+          - ops
         grid_dummy_host_certificate: true
