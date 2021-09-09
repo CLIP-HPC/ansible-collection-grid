@@ -5,4 +5,4 @@
   tasks:
     - name: "Include htcondor role"
       include_role:
-        name: "poolaccounts"
+        name: "htcondor_ce"

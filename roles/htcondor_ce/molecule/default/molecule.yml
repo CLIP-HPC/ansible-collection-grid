@@ -10,15 +10,16 @@ lint: |
   flake8
 platforms:
   - name: instance-${INSTANCE_ID:-local}
-    image: ${MOLECULE_IMAGE:-'centos/systemd'}
+    hostname: ce.grid.vbc.ac.at
+    image: centos/systemd:latest
+    command: /sbin/init
     capabilities:
       - SYS_ADMIN
     tmpfs:
       - /tmp
       - /run
-    volume_mounts:
+    volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    command: ${MOLECULE_DOCKER_COMMAND:-'/usr/sbin/init'}
 provisioner:
   name: ansible
 verifier:

@@ -41,7 +41,7 @@
       regex: '^blah_shared_directories'
 
 - name: Copy slurm_local_submit_attributes.sh customization
-  file:
+  copy:
     src: slurm_local_submit_attributes.sh
     dest: /usr/libexec/condor/glite/bin/
     mode: "0755"
@@ -64,7 +64,7 @@
     owner: condor
     mode: "0755"
     path: "{{ htcondor_ce_spool_dir }}"
-  when: htcondor_ce_spool_dir is defined
+  when: htcondor_ce_spool_dir is defined and htcondor_ce_spool_dir
 
 - name: Enable argus authorisation
   include_tasks: auth-argus.yml
