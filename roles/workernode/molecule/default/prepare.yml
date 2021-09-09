@@ -1,0 +1,20 @@
+- name: Prepare
+  hosts: all
+  pre_tasks:
+    - name: Enable EPEL
+      package:
+        name: epel-release
+        state: present
+  tasks:
+    - name: "Include grid role"
+      include_role:
+        name: "grid"
+      vars:
+        grid_vos:
+          - cms
+          - alice
+          - belle
+        grid_umd_repo_exclude:
+          - dpm-*
+          - lfc-*
+          - lcgdm-*

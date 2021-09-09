@@ -1,0 +1,29 @@
+---
+- name: Install stable repository
+  yum_repository:
+    name: htcondor-stable
+    description: "HTCondor Stable RPM Repository for Redhat Enterprise Linux {{ ansible_distribution_major_version }}"
+    baseurl: "https://research.cs.wisc.edu/htcondor/yum/stable/8.8/rhel{{ ansible_distribution_major_version }}"
+    enabled: true
+    gpgcheck: true
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-HTCondor
+
+- name: Install development repository
+  yum_repository:
+    name: htcondor-development
+    description: "HTCondor Development RPM Repository for Redhat Enterprise Linux {{ ansible_distribution_major_version }}"
+    baseurl: "https://research.cs.wisc.edu/htcondor/yum/development/rhel{{ ansible_distribution_major_version }}"
+    enabled: "{{ workernode_htcondor_dev_repo_enable }}"
+    gpgcheck: true
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-HTCondor
+
+- name: Copy HTCondor gpgkey
+  copy:
+    src: RPM-GPG-KEY-HTCondor
+    dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-HTCondor
+    mode: "0644"
+
+- name: Import HTCondor gpgkey
+  rpm_key:
+    state: present
+    key: /etc/pki/rpm-gpg/RPM-GPG-KEY-HTCondor

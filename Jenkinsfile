@@ -14,6 +14,9 @@ testAnsibleCollection([
     vobox: [
       moleculeScenarios: ["default"]
     ],
+    workernode: [
+      moleculeScenarios: ["default"]
+    ],
     // won't work because it needs to access EOS storage and gridftp is on the way out anyways
     gridftp: [
       moleculeScenarios: []

@@ -1,0 +1,18 @@
+{{ ansible_managed | comment }}
+
+export LCG_LOCATION=/usr
+export GLITE_LOCATION=/usr
+export GLITE_LOCATION_VAR=/var
+export SRM_PATH=/usr/share/srm
+
+export JAVA_HOME={{ workernode_java_home }}
+
+export MYPROXY_SERVER={{ workernode_myproxy_server }}
+export LCG_GFAL_INFOSYS={{ workernode_lcg_gfal_infosys }}
+export BDII_LIST={{ workernode_bdii_list }}
+
+export GT_PROXY_MODE=rfc
+
+{% for key, value in workernode_env_vars.items() %}
+export {{ key }}={{ value }}
+{% endfor %}
