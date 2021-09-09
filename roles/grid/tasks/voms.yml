@@ -15,13 +15,33 @@
     mode: 0755
   loop: "{{ grid_vos }}"
 
+- name: Install VOMS LSC files
+  package:
+    state: installed
+    name: "wlcg-voms-{{ vo }}"
+  loop: "{{ grid_vos }}"
+  loop_control:
+    loop_var: vo
+  when: vo in ['alice', 'atlas', 'cms', 'lhcb', 'ops', 'dteam']
+
+# Workaround until https://twiki.cern.ch/twiki/bin/view/LCG/VOMSLSCfileConfiguration#LSC_file_configuration_with_rpms finished
+- name: Install VOMS IAM files
+  package:
+    state: installed
+    name: "wlcg-iam-lsc-{{ vo }}" # after 4th of october change to wlcg-iam-voms-{{ vo }}
+  loop: "{{ grid_vos }}"
+  loop_control:
+    loop_var: vo
+  when: vo in ['alice', 'atlas', 'cms', 'lhcb']
+
 - name: Read VO info
   include_vars:
     file: voinfo.yml
     name: voinfo
 
-- name: Configure VOs
+- name: Configure VOs # for th VOs that are not configured with RPM above (i.e. belle)
   include_tasks: configure-vo.yml
   loop: "{{ grid_vos }}"
   loop_control:
     loop_var: vo
+  when: vo not in ['alice', 'atlas', 'cms', 'lhcb', 'ops', 'dteam']

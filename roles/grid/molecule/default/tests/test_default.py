@@ -13,19 +13,42 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 
 @pytest.mark.parametrize('name', [
     '/etc/grid-security/hostcert.pem',
-    '/etc/vomses/cms-lcg-voms2.cern.ch',
-    '/etc/grid-security/vomsdir/cms/lcg-voms2.cern.ch.lsc',
     '/etc/yum.repos.d/UMD-4-updates.repo'
 ])
 def test_files(host, name):
-    f = host.file('/etc/hosts')
-
+    f = host.file(name)
     assert f.exists
+
+
+@pytest.mark.parametrize('vo', [
+    'cms',
+    'alice',
+    'ops',
+])
+def test_voms_files(host, vo):
+    # check LSC files
+    lsc = '/etc/grid-security/vomsdir/%s' % vo
+    assert host.file('%s/lcg-voms2.cern.ch.lsc' % lsc).exists
+    assert host.file('%s/voms2.cern.ch.lsc' % lsc).exists
+    if vo in ['cms', 'alice', 'atlas', 'lcb']:
+        assert host.file('%s/voms-%s-auth.app.cern.ch.lsc' % (lsc, vo)).exists
+
+    # check vomses files
+    voms = '/etc/vomses'
+    assert host.file('%s/%s-lcg-voms2.cern.ch' % (voms, vo)).exists
+    assert host.file('%s/%s-voms2.cern.ch' % (voms, vo)).exists
+    # activate check after 4th of October 2021
+    # if vo in ['cms', 'alice', 'atlas', 'lcb']:
+    #     f = host.file('%s/voms-%s-auth.app.cern.ch.vomses' % (voms, vo))
+    #     assert f.exists
 
 
 @pytest.mark.parametrize('name,version', [
     ('ca-policy-lcg', '1.'),
     ('fetch-crl', '3.0.'),
+    ('wlcg-voms-alice', '1.'),
+    ('wlcg-voms-cms', '1.'),
+    ('wlcg-voms-ops', '1.'),
 ])
 def test_packages(host, name, version):
     pkg = host.package(name)

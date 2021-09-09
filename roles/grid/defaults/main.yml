@@ -29,3 +29,5 @@ grid_dummy_ca:
   key: DummyCA.key
   hash: be034f91
   cn: /C=AT/ST=Vienna/L=Vienna/O=Austrian Academy of Sciences/OU=Institute of High Energy Physics/CN=
+grid_repo_wlcg_enabled: true
+grid_repo_wlcg_priority: 10
