@@ -1,0 +1,55 @@
+# Information about the apel client database
+[db]
+hostname = {{ htcondor_ce_apel_db_hostname }}
+port = 3306
+name = apelclient
+username = {{ htcondor_ce_apel_db_username }}
+password = {{ htcondor_ce_apel_db_password }}
+
+[site_info]
+# Specify the site name from GOCDB
+site_name = {{ htcondor_ce_apel_site_name }}
+# Batch system hostname.  This does not need to be a definitive hostname,
+# but it should uniquely identify the batch system.
+# Example: pbs.gridpp.rl.ac.uk
+lrms_server = {{ ansible_fqdn }}
+
+[blah]
+enabled = true
+dir = /var/lib/condor-ce/apel
+# typical logfile name is blahp.log-yyyymmdd
+filename_prefix = blahp
+subdirs = false
+
+[batch]
+enabled = true
+
+# Reparse all batch system log files and replace them in the database.
+# Use with caution!
+#reparse = false
+
+# Batch system specific options.
+# Valid types are LSF, PBS, SGE, SLURM, HTCondor
+type = {{ htcondor_ce_lrms | upper }}
+# Whether to try to parse multi-core details
+parallel = true
+# Directory to search for accounting logfiles
+dir = /var/lib/condor-ce/apel
+# Prefix shared by all log files to parse
+filename_prefix = batch
+# Whether to search subdirectories for logfiles
+subdirs = false
+
+# LSF only: scale CPU and wall durations according to
+# 'HostFactor' value in logfiles
+#scale_host_factor = false
+
+# Univa Grid Engine timestamps changed from seconds to milliseconds in version
+# 8.2.0, so for versions 8.2.0 onwards use 'true'. Other forks of Grid Engine
+# are probably not affected and so should use 'false'.
+ge_ms_timestamps = false
+
+[logging]
+logfile = /var/log/apelparser.log
+level = INFO
+console = true

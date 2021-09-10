@@ -15,13 +15,28 @@
   changed_when: false
   failed_when: false
 
-- name: Enable fetch-crl systemd boot service
-  service:
-    name: fetch-crl-boot
-    enabled: true
+- block:
+  - name: Enable fetch-crl systemd boot service (Centos7/RHEL7)
+    service:
+      name: fetch-crl-boot
+      enabled: true
 
-- name: Enable fetch-crl systemd cron job
-  service:
-    name: fetch-crl-cron
-    enabled: true
-    state: started
+  - name: Enable fetch-crl systemd cron job (Centos7/RHEL7)
+    service:
+      name: fetch-crl-cron
+      enabled: true
+      state: started
+  when: ansible_distribution_major_version == 7
+
+- block:
+  - name: Enable fetch-crl systemd service (Centos8/RHEL8)
+    service:
+      name: fetch-crl.service
+      enabled: true
+
+  - name: Enable fetch-crl systemd cron job (Centos8/RHEL8)
+    service:
+      name: fetch-crl.timer
+      enabled: true
+      state: started
+  when: ansible_distribution_major_version == 8

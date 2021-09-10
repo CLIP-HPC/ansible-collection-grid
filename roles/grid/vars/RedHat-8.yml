@@ -1,0 +1,3 @@
+---
+os_name: centos8
+grid_repo_wlcg_url: http://linuxsoft.cern.ch/wlcg/centos8/$basearch

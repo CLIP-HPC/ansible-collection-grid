@@ -6,3 +6,6 @@
     - name: "Include htcondor role"
       include_role:
         name: "htcondor_ce"
+      vars:
+        htcondor_ce_lrms: slurm
+        htcondor_ce_apel_site_name: MySite

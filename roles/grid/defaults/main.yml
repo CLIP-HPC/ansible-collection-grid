@@ -1,6 +1,7 @@
 ---
 # defaults file for grid role
 grid_enable_repo: true
+grid_enable_umd_repo: true
 grid_umd_version: 4
 grid_umd_repo_priority: 10
 grid_umd_repo_rpmgpgkeys:
