@@ -5,50 +5,52 @@
     state: present
   failed_when: false
 
-- name: Install UMD base repository
-  yum_repository:
-    name: "UMD-{{ grid_umd_version }}-base"
-    description: "UMD{{ grid_umd_version }} Base repository"
-    baseurl: "http://repository.egi.eu/sw/production/umd/{{ grid_umd_version }}/{{ os_name }}/$basearch/base"
-    enabled: true
-    exclude: "{{ grid_umd_repo_exclude | join(' ') }}"
-    includepkgs: "{{ grid_umd_repo_includepkgs | join(' ') }}"
-    gpgcheck: true
-    gpgkey: >-
-      {% for k in grid_umd_repo_rpmgpgkeys -%}
-        file:///etc/pki/rpm-gpg/{{ k }}
-      {%- endfor %}
-    priority: "{{ grid_umd_repo_priority | string }}"
-    protect: true
+- block:
+  - name: Install UMD base repository
+    yum_repository:
+      name: "UMD-{{ grid_umd_version }}-base"
+      description: "UMD{{ grid_umd_version }} Base repository"
+      baseurl: "http://repository.egi.eu/sw/production/umd/{{ grid_umd_version }}/{{ os_name }}/$basearch/base"
+      enabled: true
+      exclude: "{{ grid_umd_repo_exclude | join(' ') }}"
+      includepkgs: "{{ grid_umd_repo_includepkgs | join(' ') }}"
+      gpgcheck: true
+      gpgkey: >-
+        {% for k in grid_umd_repo_rpmgpgkeys -%}
+          file:///etc/pki/rpm-gpg/{{ k }}
+        {%- endfor %}
+      priority: "{{ grid_umd_repo_priority | string }}"
+      protect: true
 
-- name: Install UMD updates repository
-  yum_repository:
-    name: "UMD-{{ grid_umd_version }}-updates"
-    description: "UMD{{ grid_umd_version }} updates repository"
-    baseurl: "http://repository.egi.eu/sw/production/umd/{{ grid_umd_version }}/{{ os_name }}/$basearch/updates"
-    enabled: true
-    exclude: "{{ grid_umd_repo_exclude | join(' ') }}"
-    includepkgs: "{{ grid_umd_repo_includepkgs | join(' ') }}"
-    gpgcheck: true
-    gpgkey: >-
-      {% for k in grid_umd_repo_rpmgpgkeys -%}
-        file:///etc/pki/rpm-gpg/{{ k }}
-      {%- endfor %}
-    priority: "{{ grid_umd_repo_priority | string }}"
-    protect: true
+  - name: Install UMD updates repository
+    yum_repository:
+      name: "UMD-{{ grid_umd_version }}-updates"
+      description: "UMD{{ grid_umd_version }} updates repository"
+      baseurl: "http://repository.egi.eu/sw/production/umd/{{ grid_umd_version }}/{{ os_name }}/$basearch/updates"
+      enabled: true
+      exclude: "{{ grid_umd_repo_exclude | join(' ') }}"
+      includepkgs: "{{ grid_umd_repo_includepkgs | join(' ') }}"
+      gpgcheck: true
+      gpgkey: >-
+        {% for k in grid_umd_repo_rpmgpgkeys -%}
+          file:///etc/pki/rpm-gpg/{{ k }}
+        {%- endfor %}
+      priority: "{{ grid_umd_repo_priority | string }}"
+      protect: true
 
-- name: Copy gpgkeys
-  copy:
-    src: "{{ item }}"
-    dest: "/etc/pki/rpm-gpg/{{ item }}"
-    mode: "0644"
-  loop: "{{ grid_umd_repo_rpmgpgkeys }}"
+  - name: Copy gpgkeys
+    copy:
+      src: "{{ item }}"
+      dest: "/etc/pki/rpm-gpg/{{ item }}"
+      mode: "0644"
+    loop: "{{ grid_umd_repo_rpmgpgkeys }}"
 
-- name: Import gpgkeys
-  rpm_key:
-    state: present
-    key: "/etc/pki/rpm-gpg/{{ item }}"
-  loop: "{{ grid_umd_repo_rpmgpgkeys }}"
+  - name: Import gpgkeys
+    rpm_key:
+      state: present
+      key: "/etc/pki/rpm-gpg/{{ item }}"
+    loop: "{{ grid_umd_repo_rpmgpgkeys }}"
+  when: grid_enable_umd_repo | bool
 
 
 - name: Install WLCG repository

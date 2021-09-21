@@ -46,6 +46,15 @@
       include_role:
         name: "grid"
       vars:
+        grid_umd_repo_exclude:
+          - dpm-*
+          - lfc-*
+          - lcgdm-*
+          - python2-dpm-*
+          - python2-lfc-*
+          - python2-lcgdm-*
+          - xrootd-*
+          - "*condor*"
         grid_vos:
           - cms
     - name: "Include poolaccounts role"

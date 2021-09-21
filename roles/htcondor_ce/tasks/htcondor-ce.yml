@@ -9,7 +9,6 @@
       - "lcmaps"
     state: installed
 
-
 - name: Configure HTCondor CE
   template:
     src: "{{ item.src }}"
@@ -18,8 +17,6 @@
   loop:
     - src: job-routes.conf.j2
       dest: config.d/60-job-routes.conf
-    - src: condor_mapfile.j2
-      dest: condor_mapfile
     - src: local.conf.j2
       dest: config.d/99-local.conf
   notify: reconfigure htcondor_ce
@@ -29,7 +26,7 @@
     state: present
     line: "{{ item.line }}"
     regex: "{{ item.regex }}"
-    path: /usr/libexec/condor/glite/etc/batch_gahp.config
+    path: /etc/blah.config
   loop:
     - line: blah_disable_wn_proxy_renewal=yes
       regex: '^blah_disable_wn_proxy_renewal'
@@ -40,17 +37,11 @@
     - line: "blah_shared_directories={{ htcondor_ce_shared_dir | unique | join(':') }}"
       regex: '^blah_shared_directories'
 
-- name: Copy slurm_local_submit_attributes.sh customization
-  copy:
-    src: slurm_local_submit_attributes.sh
-    dest: /usr/libexec/condor/glite/bin/
-    mode: "0755"
-
 - name: Configure HTCondor CE sysconfig
-  template:
-    src: condor-ce.sysconfig.j2
-    dest: /etc/sysconfig/condor-ce
-    mode: "0644"
+  lineinfile:
+    path: /etc/sysconfig/condor-ce
+    regexp: "^export LLGT_RUN_LCAS"
+    line: "export LLGT_RUN_LCAS=no"
   notify: restart htcondor_ce
 
 - name: Enable static shadow

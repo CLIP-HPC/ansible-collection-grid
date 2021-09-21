@@ -1,0 +1,60 @@
+---
+- name: Install APEL pkg
+  yum:
+    name: htcondor-ce-apel
+    state: installed
+
+- block:
+    - name: Copy Condor-ce Blah apel script
+      copy:
+        src: "apel/condor_ce_blah.sh"
+        dest: /usr/share/condor-ce/
+        mode: "0755"
+
+    - name: Copy LRMS apel script
+      copy:
+        src: "apel/{{ htcondor_ce_lrms }}.sh"
+        dest: /usr/share/condor-ce/
+        mode: "0755"
+
+    - name: Disable condor_batch_blah.sh
+      lineinfile:
+        path: /usr/share/condor-ce/condor_ce_apel.sh
+        regexp: '^/usr/share/condor-ce/condor_batch_blah.sh '
+        line: '# /usr/share/condor-ce/condor_batch_blah.sh'
+
+    - name: Add custom apel scripts
+      lineinfile:
+        path: /usr/share/condor-ce/condor_ce_apel.sh
+        regexp: '^/usr/share/condor-ce/{{ item }} '
+        line: '/usr/share/condor-ce/{{ item }}'
+        insertbefore: '^/usr/bin/apelparser'
+      loop:
+        - "{{ htcondor_ce_lrms }}.sh"
+        - "condor_ce_blah.sh"
+
+  when: htcondor_ce_lrms != 'condor'
+
+- name: Configure APEL sender
+  copy:
+    src: apel/sender.cfg
+    dest: "/etc/apel/"
+    mode: "0644"
+
+- name: Configure APEL client
+  template:
+    src: templates/apel/client.cfg.j2
+    dest: "/etc/apel/client.cfg"
+    mode: "0600"
+
+- name: Configure APEL parser
+  template:
+    src: templates/apel/parser.cfg.j2
+    dest: /etc/apel/parser.cfg
+    mode: "0600"
+
+- name: Enable and start condor-ce-apel timer
+  service:
+    name: condor-ce-apel.timer
+    enabled: true
+    state: started

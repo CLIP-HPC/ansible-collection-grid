@@ -1,0 +1,87 @@
+# Information about the apel client database
+[db]
+hostname = {{ htcondor_ce_apel_db_hostname }}
+port = 3306
+name = apelclient
+username = {{ htcondor_ce_apel_db_username }}
+password = {{ htcondor_ce_apel_db_password }}
+
+[spec_updater]
+enabled = false
+# The GOCDB site name
+site_name = {{ htcondor_ce_apel_site_name }}
+ldap_host = lcg-bdii.cern.ch
+ldap_port = 2170
+
+## The following information is necessary for
+## local jobs only.  Provide an average value for
+## machines which your batch system uses.
+## Supported specs are HEPSPEC and Si2k
+## Provide also a hostname for your batch system.
+## This does not need to be a definitive hostname,
+## but it should uniquely identify the batch system.
+## Example: pbs.gridpp.rl.ac.uk
+#lrms_server =
+#spec_type = HEPSPEC
+#spec_value = 1.0
+
+lrms_server = {{ ansible_fqdn }}
+spec_type = HEPSPEC
+spec_value = {{ htcondor_ce_apel_spec_value }}
+manual_spec1 = {{ ansible_fqdn }}:9619/{{ ansible_fqdn }}-condor,HEPSPEC,{{ htcondor_ce_apel_spec_value }}
+
+## To manually set specs for all jobs (not just local ones), configure lines
+## like the following named "manual_spec" followed by consecutive integers for
+## however many batch systems are relevant. The value should be a unique name
+## for the system, then the spec type ('HEPSPEC' or 'Si2k') and the spec value.
+# manual_spec1 = grid10.uni.ac.uk:1234/grid10.uni.ac.uk-condor,HEPSPEC,10.0
+# manual_spec2 = grid22.uni.ac.uk:1234/grid22.uni.ac.uk-condor,HEPSPEC,15.0
+# manual_spec3 = grid35.uni.ac.uk:1234/grid35.uni.ac.uk-condor,HEPSPEC,15.0
+
+[joiner]
+enabled = true
+local_jobs = false
+
+[unloader]
+enabled = true
+dir_location = /var/spool/apel/
+
+# You may send only summaries of your data to the APEL server,
+# rather than individual job records.
+# This reduces the network load.
+send_summaries = false
+
+# You may send 'withheld' instead of the user's DN in the
+# GlobalUserName field.  This is only valid for individual
+# job records.
+withhold_dns = false
+
+# Optional: send ONLY these VOs to the APEL server.
+# This overrides exclude_vos.
+#include_vos = atlas,cms,lhcb
+
+# Optional: do not send these VOs to the APEL server.
+# This does not take effect if include_vos is set.
+#exclude_vos = atlas,cms
+
+# Which records to send:
+# latest - just send the new records to the server
+# gap    - send records from between the specified dates (inclusive)
+#          this is only for individual job records
+# all    - send all records to the server.  Don't do this for individual
+#          job records without talking to the apel team!
+interval = latest
+## only used if interval = gap
+#gap_start = 2012-01-01
+#gap_end = 2012-01-31
+
+# Send CAR-format records - only for job records
+send_ur = false
+
+[ssm]
+enabled = true
+
+[logging]
+logfile = /var/log/apel/client.log
+level = INFO
+console = true
