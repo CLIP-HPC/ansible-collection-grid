@@ -27,16 +27,16 @@ def test_files(host, name):
 ])
 def test_voms_files(host, vo):
     # check LSC files
-    lsc = '/etc/grid-security/vomsdir/%s' % vo
-    assert host.file('%s/lcg-voms2.cern.ch.lsc' % lsc).exists
-    assert host.file('%s/voms2.cern.ch.lsc' % lsc).exists
+    lsc = f"/etc/grid-security/vomsdir/{vo}"
+    assert host.file(f"{lsc}/lcg-voms2.cern.ch.lsc").exists
+    assert host.file(f"{lsc}/voms2.cern.ch.lsc").exists
     if vo in ['cms', 'alice', 'atlas', 'lcb']:
-        assert host.file('%s/voms-%s-auth.app.cern.ch.lsc' % (lsc, vo)).exists
+        assert host.file(f"{lsc}/voms-{vo}-auth.app.cern.ch.lsc").exists
 
     # check vomses files
     voms = '/etc/vomses'
-    assert host.file('%s/%s-lcg-voms2.cern.ch' % (voms, vo)).exists
-    assert host.file('%s/%s-voms2.cern.ch' % (voms, vo)).exists
+    assert host.file(f"{voms}/{vo}-lcg-voms2.cern.ch").exists
+    assert host.file(f"{voms}/{vo}-voms2.cern.ch").exists
     # activate check after 4th of October 2021
     # if vo in ['cms', 'alice', 'atlas', 'lcb']:
     #     f = host.file('%s/voms-%s-auth.app.cern.ch.vomses' % (voms, vo))
