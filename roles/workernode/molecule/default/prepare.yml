@@ -18,3 +18,9 @@
           - dpm-*
           - lfc-*
           - lcgdm-*
+          - python2-dpm-*
+          - python2-lfc-*
+          - python2-lcgdm-*
+          - gfal2-util-*
+          - xrootd-*
+          - "*condor*"

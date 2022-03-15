@@ -46,6 +46,7 @@
       include_role:
         name: "grid"
       vars:
+        grid_umd_repo_priority: 98
         grid_umd_repo_exclude:
           - dpm-*
           - lfc-*
