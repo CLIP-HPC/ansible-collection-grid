@@ -19,6 +19,10 @@
       dest: config.d/60-job-routes.conf
     - src: local.conf.j2
       dest: config.d/99-local.conf
+    - src: scitokens.conf.j2
+      dest: mapfiles.d/10-scitokens.conf
+    - src: files/01-ce-auth.conf
+      dest: config.d/01-ce-auth.conf
   notify: reconfigure htcondor_ce
 
 - name: Disable WN proxy renewal

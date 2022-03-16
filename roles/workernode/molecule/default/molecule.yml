@@ -10,7 +10,7 @@ lint: |
   flake8
 platforms:
   - name: instance-${INSTANCE_ID:-local}
-    hostname: vobox.grid.vbc.ac.at
+    hostname: cn-1.grid.vbc.ac.at
     image: ${MOLECULE_IMAGE:-'centos/systemd:latest'}
     command: /sbin/init
     capabilities:
