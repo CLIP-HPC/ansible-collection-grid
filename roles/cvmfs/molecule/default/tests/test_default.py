@@ -3,6 +3,7 @@ __metaclass__ = type
 
 
 import os
+import pytest
 
 import testinfra.utils.ansible_runner
 
@@ -24,3 +25,15 @@ def test_file_on_cvmfs(host):
     assert f.user == 'cvmfs'
     assert f.group == 'cvmfs'
     assert f.contains('<site name="T2_AT_Vienna">')
+
+
+@pytest.mark.parametrize("folder", [
+    "cms.cern.ch",
+    "data.galaxyproject.org",
+    "singularity.galaxyproject.org"
+])
+def test_cvmfs_probe(host, folder):
+    f = host.file(f"/cvmfs/{folder}")
+    assert f.exists
+    assert f.is_directory
+    assert len(f.listdir()) > 0
