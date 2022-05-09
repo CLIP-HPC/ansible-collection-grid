@@ -77,11 +77,34 @@
 - name: Configure domains
   template:
     src: repository.local.j2
-    dest: "/etc/cvmfs/domain.d/{{ repository.name }}.local"
+    dest: "/etc/cvmfs/domain.d/{{ repository.name }}"
     mode: "0644"
   loop: "{{ cvmfs_domains }}"
   loop_control:
     loop_var: repository
+
+- name: Create key folder for domains
+  file:
+    state: directory
+    path: "{{ domain.config['CVMFS_KEYS_DIR'] }}"
+    mode: "0755"
+  loop: "{{ cvmfs_domains }}"
+  loop_control:
+    loop_var: domain
+  when: "'CVMFS_KEYS_DIR' in domain.config"
+
+
+- name: Create keys in key folder
+  copy:
+    content: "{{ domain.1.key }}"
+    dest: "{{ domain.0.config['CVMFS_KEYS_DIR'] }}/{{ domain.1.name }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: root
+    mode: 0444
+  loop: "{{ cvmfs_domains | subelements('keys') }}"
+  loop_control:
+    loop_var: domain
+  when: "'CVMFS_KEYS_DIR' in domain.0.config"
 
 - name: Configure autofs
   block:
