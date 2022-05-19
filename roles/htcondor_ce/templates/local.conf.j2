@@ -6,3 +6,5 @@ TCP_FORWARDING_HOST={{ htcondor_ce_tcp_forwarding_host }}
 {% if htcondor_ce_private_network_name is defined %}PRIVATE_NETWORK_NAME={{ htcondor_ce_private_network_name }}
 {% endif %}
 PRIVATE_NETWORK_INTERFACE={{ ansible_default_ipv4.interface }}
+{% if htcondor_ce_max_history_rotations is defined %}MAX_HISTORY_ROTATIONS = {{ htcondor_ce_max_history_rotations }}
+{% endif %}
