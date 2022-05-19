@@ -15,11 +15,16 @@ safe_config_val () {
     eval "$var"='$val'
 }
 
-today=$(date -u --date='00:00:00 today' +%s)
-yesterday=$(date -u --date='00:00:00 yesterday' +%s)
+DATE='today'
+if [ $# -ge 1 ] && [ -n "$1" ]; then
+    DATE=$1
+fi
+
+today=$(date -u --date="00:00:00 $DATE" +%s)
+yesterday=$(date -u --date="00:00:00 $DATE - 1 day" +%s)
 
 safe_config_val OUTPUT_DIR APEL_OUTPUT_DIR
-OUTPUT_FILE="$OUTPUT_DIR/blahp-$(date -u --date='yesterday' +%Y%m%d )-$(hostname -s)"
+OUTPUT_FILE="$OUTPUT_DIR/blahp-$(date -u --date="$DATE - 1 day" +%Y%m%d )-$(hostname -s)"
 
 if [ ! -d $OUTPUT_DIR ] || [ ! -w $OUTPUT_DIR ]; then
     echo "Cannot write to $OUTPUT_DIR"
