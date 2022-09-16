@@ -54,6 +54,7 @@ Other global settings can be passed by a hash
 
 
     cvmfs_repositories:
+      - name: config-egi.egi.eu
       - name: cms.cern.ch
         config:
           CMS_CACHE_BASE: /var/lib/test

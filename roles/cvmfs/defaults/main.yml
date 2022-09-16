@@ -15,3 +15,4 @@ cvmfs_cache_base: /var/cache/cvmfs
 cvmfs_repositories: []
 cvmfs_domains: []
 cvmfs_config: {}
+cvmfs_default_mount_opts: "_netdev,nodev"
