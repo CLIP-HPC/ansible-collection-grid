@@ -121,11 +121,13 @@
         state: started
   when: cvmfs_mount_repositories == 'autofs' and ansible_virtualization_type != 'docker'
 
-- name: Mount repositories
+- name: Mount cvmfs repositories
   mount:
     path: "/cvmfs/{{ item.name }}"
     src: "{{ item.name }}"
     state: mounted
     fstype: cvmfs
+    opts: "{{ cvmfs_default_mount_opts }}{{ ',x-systemd.requires-mounts-for=/cvmfs/config-egi.egi.eu' if item.name != 'config-egi.egi.eu' else '' }}"
+  become: true
   loop: "{{ cvmfs_repositories }}"
   when: cvmfs_mount_repositories == 'mount'
