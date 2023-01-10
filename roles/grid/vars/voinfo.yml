@@ -66,8 +66,8 @@ auvergrid:
     hostname: cclcgvomsli01.in2p3.fr
     port: 15002
 belle:
-  - dn: /C=DE/O=GermanGrid/OU=DESY/CN=host/grid-voms.desy.de
-    ca_dn: /C=DE/O=GermanGrid/CN=GridKa-CA
+  - dn: /DC=org/DC=terena/DC=tcs/C=DE/ST=Hamburg/O=Deutsches Elektronen-Synchrotron DESY/CN=grid-voms.desy.de
+    ca_dn: /C=NL/O=GEANT Vereniging/CN=GEANT eScience SSL CA 4
     hostname: grid-voms.desy.de
     port: 15020
   - dn: /C=JP/O=KEK/OU=CRC/CN=host/voms.cc.kek.jp
