@@ -8,9 +8,9 @@ fail () {
 safe_config_val () {
     var=$1
     attr=$2
-    val=$(condor_ce_config_val $attr) ||
+    val=$(condor_ce_config_val "$attr") ||
     fail "Failed to retrieve CE configuration value '$attr'"
-    eval "$var"='$val'
+    eval "$var"="$val"
 }
 
 DATE='today'
@@ -30,4 +30,4 @@ OUTPUT_FILE="$OUTPUT_DIR/batch-$(date -u --date="$DATE - 1day" +%Y%m%d )-$(hostn
 
 safe_config_val BATCH_HOST APEL_BATCH_HOST
 
-TZ=GMT sacct -s CD,F,TO,OOM -P -n --format=JobID,JobName,User,Group,Start,End,Elapsed,TotalCPU,Partition,NCPUS,NNodes,NodeList,MaxRSS,MaxVMSize,State -r grid,cms -S "$yesterday" -E "$today" | grep batch > $OUTPUT_FILE
+TZ=GMT sacct -s CD,F,TO,OOM -P -n --format=JobID,JobName,User,Group,Start,End,Elapsed,TotalCPU,Partition,NCPUS,NNodes,NodeList,MaxRSS,MaxVMSize,State -r grid,cms -S "$yesterday" -E "$today" | grep batch > "$OUTPUT_FILE"

@@ -8,7 +8,7 @@ VOBOX_HOST={{ role_vobox_host | default(inventory_hostname) }}
 WMS_HOST=required.but.unused
 PX_HOST=myproxy.cern.ch
 BDII_HOST=lcg-bdii.cern.ch
-SE_LIST={{ role_vobox_storage_element }} 
+SE_LIST={{ role_vobox_storage_element }}
 
 CONFIG_USERS={{ (role_vobox_create_user | bool) | ternary('yes','no') }}
 
