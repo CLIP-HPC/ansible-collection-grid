@@ -1,0 +1,3 @@
+{{ ansible_managed | comment }}
+CVMFS_SERVER_URL={{ domain.urls | join(';') }}
+CVMFS_KEYS_DIR=/etc/cvmfs/keys/{{ domain.name }}

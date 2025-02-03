@@ -1,6 +1,15 @@
 ---
 # handlers file for hephy.cvmfs-client
 - name: Restart autofs
-  service:
+  ansible.builtin.service:
     name: autofs
     state: restarted
+
+- name: Reload cvmfs config
+  ansible.builtin.command: cvmfs_config reload
+  changed_when: true
+
+- name: Reload autofs
+  ansible.builtin.service:
+    name: autofs
+    state: reloaded

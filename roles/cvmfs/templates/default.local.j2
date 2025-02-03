@@ -18,6 +18,9 @@ CVMFS_CACHE_BASE='{{ cvmfs_cache_base }}'
 CVMFS_REPOSITORIES='{{ cvmfs_repositories | map(attribute='name') | join(',') }}'
 {% endif %}
 
+# generally we do not want oomkiller to hit the CVMFS client
+CVMFS_OOM_SCORE_ADJ="-10"
+
 {% for key, value in cvmfs_config.items() %}
 {{ key }}={{ value }}
 {% endfor %}

@@ -1,0 +1,9 @@
+---
+- name: test | CVMFS check setup
+  ansible.builtin.command: /usr/bin/cvmfs_config chksetup
+  changed_when: false
+
+- name: test | CVMFS probe
+  ansible.builtin.command: /usr/bin/cvmfs_config probe
+  changed_when: false
+  check_mode: false

@@ -3,23 +3,26 @@
   hosts: all
   tasks:
     - name: "Include cvmfs role"
-      include_role:
-        name: "cvmfs"
+      ansible.builtin.include_role:
+        name: cvmfs
       vars:
         cvmfs_manage_yumrepo: true
         cvmfs_quota_limit: 4000
-        cvmfs_mount_repositories: mount
+        cvmfs_auto_setup: false
         cvmfs_repositories:
           - name: cms.cern.ch
             env_vars:
               CMS_LOCAL_SITE: /cvmfs/cms.cern.ch/SITECONF/T2_AT_Vienna
           - name: data.galaxyproject.org
-          - name: singularity.galaxyproject.org
         cvmfs_domains:
-          - name: galaxyproject.org.conf
-            config:
-              CVMFS_SERVER_URL: "http://cvmfs1-psu0.galaxyproject.org/cvmfs/@fqrn@;http://cvmfs1-iu0.galaxyproject.org/cvmfs/@fqrn@;http://cvmfs1-tacc0.galaxyproject.org/cvmfs/@fqrn@;http://cvmfs1-ufr0.galaxyproject.eu/cvmfs/@fqrn@"
-              CVMFS_KEYS_DIR: "/etc/cvmfs/keys/galaxyproject.org"
+          - name: galaxyproject.org
+            urls:
+              - "http://cvmfs1-psu0.galaxyproject.org/cvmfs/@fqrn@"
+              - "http://cvmfs1-iu0.galaxyproject.org/cvmfs/@fqrn@"
+              - "http://cvmfs1-iu0.galaxyproject.org/cvmfs/@fqrn@"
+              - "http://cvmfs1-tacc0.galaxyproject.org/cvmfs/@fqrn@"
+              - "http://cvmfs1-mel0.gvl.org.au/cvmfs/@fqrn@"
+              - "http://cvmfs1-ufr0.galaxyproject.eu/cvmfs/@fqrn@"
             keys:
               - name: data.galaxyproject.org.pub
                 key: |
