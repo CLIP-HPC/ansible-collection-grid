@@ -1,0 +1,17 @@
+---
+- name: igtf | Add IGTF repository for YUM
+  ansible.builtin.yum_repository:
+    name: EGI-trustanchors
+    description: EGI-trustanchors repo
+    baseurl:
+      "https://repository.egi.eu/sw/production/cas/1/current/"
+    enabled: true
+    gpgcheck: true
+    gpgkey: "https://repository.egi.eu/sw/production/cas/1/GPG-KEY-EUGridPMA-RPM-3"
+
+- name: igtf | Ensure EGI Policy Core and WLCG CA package is present
+  ansible.builtin.package:
+    name:
+      - ca-policy-egi-core
+      - ca-policy-lcg
+    state: present

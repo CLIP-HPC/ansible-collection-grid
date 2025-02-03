@@ -1,42 +1,7 @@
 ---
-- name: Install fetch-crl
-  package:
+# Configure Fetch-CRL
+
+- name: fetch-crl | Install fetch-crl
+  ansible.builtin.package:
     name: fetch-crl
     state: present
-
-- name: Configure fetch-crl
-  template:
-    src: fetch-crl.conf.j2
-    dest: /etc/fetch-crl.conf
-    mode: "0644"
-
-- name: Initial run of fetch-crl
-  command: /usr/sbin/fetch-crl
-  changed_when: false
-  failed_when: false
-
-- block:
-  - name: Enable fetch-crl systemd boot service (Centos7/RHEL7)
-    service:
-      name: fetch-crl-boot
-      enabled: true
-
-  - name: Enable fetch-crl systemd cron job (Centos7/RHEL7)
-    service:
-      name: fetch-crl-cron
-      enabled: true
-      state: started
-  when: ansible_distribution_major_version == 7
-
-- block:
-  - name: Enable fetch-crl systemd service (Centos8/RHEL8)
-    service:
-      name: fetch-crl.service
-      enabled: true
-
-  - name: Enable fetch-crl systemd cron job (Centos8/RHEL8)
-    service:
-      name: fetch-crl.timer
-      enabled: true
-      state: started
-  when: ansible_distribution_major_version == 8

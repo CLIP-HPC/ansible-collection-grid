@@ -1,34 +1,9 @@
 ---
 # defaults file for grid role
-grid_enable_repo: true
-grid_enable_umd_repo: true
-grid_umd_version: 4
-grid_umd_repo_priority: 10
-grid_umd_repo_rpmgpgkeys:
-  - RPM-GPG-KEY-emi
-  - UMD-RPM-PGP-KEY
-  - RPM-GPG-KEY-QCG
-  - RPM-GPG-KEY-nordugrid
-  - 0608B895.txt
-grid_umd_repo_exclude: []
-grid_umd_repo_includepkgs: []
+grid_install_wlcg_repo: true
+grid_install_umd_repo: true
+grid_enable_fetch_crl: true
 grid_enable_certificates: true
-grid_ca_policies_cvmfs: false
-grid_ca_polices_pkgs:
-  - ca-policy-egi-core
-  - ca-policy-lcg
 grid_fetchcrl_options: []
 grid_vos: []
-grid_security_dir: /etc/grid-security
-grid_vomses_dir: /etc/vomses
 grid_host_certificate: {}
-grid_voinfo_url: http://cclavoisier01.in2p3.fr:8080/lavoisier/voVoms?accept=json
-grid_dummy_host_certificate: false
-grid_site_name: Dummy Site
-grid_dummy_ca:
-  crt: DummyCA.crt
-  key: DummyCA.key
-  hash: be034f91
-  cn: /C=AT/ST=Vienna/L=Vienna/O=Austrian Academy of Sciences/OU=Institute of High Energy Physics/CN=
-grid_repo_wlcg_enabled: true
-grid_repo_wlcg_priority: 10

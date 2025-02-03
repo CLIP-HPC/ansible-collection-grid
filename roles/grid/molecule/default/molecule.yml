@@ -9,17 +9,9 @@ lint: |
   ansible-lint
   flake8
 platforms:
-  - name: instance-${INSTANCE_ID:-local}
-    image: ${MOLECULE_IMAGE:-'centos/systemd:latest'}
-    command: /sbin/init
-    capabilities:
-      - SYS_ADMIN
-    tmpfs:
-      - /tmp
-      - /run
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  - name: instance-ubi9.4-1-${INSTANCE_ID:-local}
+    image: docker.artifactory.imp.ac.at/vbc/ubi9/tde:9.4-1
 provisioner:
   name: ansible
-verifier:
-  name: testinfra
+scenario:
+  name: default

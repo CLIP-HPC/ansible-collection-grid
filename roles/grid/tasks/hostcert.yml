@@ -1,14 +1,15 @@
 ---
-- name: Install host certificate
-  copy:
+- name: hostcert | Install host certificate
+  ansible.builtin.copy:
     src: "{{ grid_host_certificate.cert }}"
     dest: "{{ grid_security_dir }}/hostcert.pem"
-    remote_src: "{{ grid_host_certificate.remote_src }}"
-    mode: 0644
+    setype: etc_t
+    mode: "0644"
 
-- name: Install host private key
-  copy:
+
+- name: hostcert | Install host private key
+  ansible.builtin.copy:
     src: "{{ grid_host_certificate.key }}"
     dest: "{{ grid_security_dir }}/hostkey.pem"
-    mode: 0400
-    remote_src: "{{ grid_host_certificate.remote_src }}"
+    setype: etc_t
+    mode: "0400"

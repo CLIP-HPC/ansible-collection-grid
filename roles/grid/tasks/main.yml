@@ -1,36 +1,19 @@
 ---
 # tasks file for grid role
-- name: Include OS specific variables
-  include_vars: "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
 
-- name: Configure UMD repo
-  include_tasks: repos.yml
-  when: grid_enable_repo
+- name: Install IGTF Repository and packages
+  ansible.builtin.include_tasks: igtf.yml
 
-- name: Configure certificates
-  block:
+- name: Configure UMD and WLCG repositories
+  ansible.builtin.include_tasks: repos.yml
 
-    - name: Install ca_policy
-      include_tasks: ca-policy.yml
-      when: grid_enable_certificates != 'cvmfs'
+- name: Install and configure fetch-crl
+  ansible.builtin.include_tasks: fetch-crl.yml
+  when: grid_enable_fetch_crl | bool
 
-    - name: Install fetch-crl
-      include_tasks: fetch-crl.yml
-      when: grid_enable_certificates != 'cvmfs'
+- name: Install VOMS
+  ansible.builtin.include_tasks: voms.yml
 
-    - name: Install empty CA policies
-      include_tasks: empty-ca-policy.yml
-      when: grid_enable_certificates == 'cvmfs'
-
-    - name: Install VOMS
-      include_tasks: voms.yml
-
-    - name: Install host certificate
-      include_tasks: hostcert.yml
-      when: grid_host_certificate | length > 0
-
-    - name: Install dummy hostcert
-      include_tasks: dummy-hostcert.yml
-      when: grid_dummy_host_certificate
-
-  when: grid_enable_certificates
+- name: Install host certificate
+  ansible.builtin.include_tasks: hostcert.yml
+  when: grid_host_certificate | length > 0

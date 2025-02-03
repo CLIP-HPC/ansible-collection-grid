@@ -1,75 +1,38 @@
 ---
-- name: Install yum priorities
-  package:
-    name: yum-priorities
-    state: present
-  failed_when: false
+# Configure WLCG and UMD repositories
 
-- block:
-  - name: Install UMD base repository
-    yum_repository:
-      name: "UMD-{{ grid_umd_version }}-base"
-      description: "UMD{{ grid_umd_version }} Base repository"
-      baseurl: "http://repository.egi.eu/sw/production/umd/{{ grid_umd_version }}/{{ os_name }}/$basearch/base"
-      enabled: true
-      exclude: "{{ grid_umd_repo_exclude | join(' ') }}"
-      includepkgs: "{{ grid_umd_repo_includepkgs | join(' ') }}"
-      gpgcheck: true
-      gpgkey: >-
-        {% for k in grid_umd_repo_rpmgpgkeys -%}
-          file:///etc/pki/rpm-gpg/{{ k }}
-        {%- endfor %}
-      priority: "{{ grid_umd_repo_priority | string }}"
-      protect: true
-
-  - name: Install UMD updates repository
-    yum_repository:
-      name: "UMD-{{ grid_umd_version }}-updates"
-      description: "UMD{{ grid_umd_version }} updates repository"
-      baseurl: "http://repository.egi.eu/sw/production/umd/{{ grid_umd_version }}/{{ os_name }}/$basearch/updates"
-      enabled: true
-      exclude: "{{ grid_umd_repo_exclude | join(' ') }}"
-      includepkgs: "{{ grid_umd_repo_includepkgs | join(' ') }}"
-      gpgcheck: true
-      gpgkey: >-
-        {% for k in grid_umd_repo_rpmgpgkeys -%}
-          file:///etc/pki/rpm-gpg/{{ k }}
-        {%- endfor %}
-      priority: "{{ grid_umd_repo_priority | string }}"
-      protect: true
-
-  - name: Copy gpgkeys
-    copy:
-      src: "{{ item }}"
-      dest: "/etc/pki/rpm-gpg/{{ item }}"
-      mode: "0644"
-    loop: "{{ grid_umd_repo_rpmgpgkeys }}"
-
-  - name: Import gpgkeys
-    rpm_key:
-      state: present
-      key: "/etc/pki/rpm-gpg/{{ item }}"
-    loop: "{{ grid_umd_repo_rpmgpgkeys }}"
-  when: grid_enable_umd_repo | bool
+# - name: Install yum priorities
+#   ansible.builtin.package:
+#     name: yum-priorities
+#     state: present
 
 
-- name: Install WLCG repository
-  yum_repository:
-    name: wlcg
-    description: WLCG repoitory
-    baseurl: "{{ grid_repo_wlcg_url }}"
-    enabled: "{{ grid_repo_wlcg_enabled }}"
-    gpgcheck: true
-    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-wlcg
-    priority: "{{ grid_repo_wlcg_priority }}"
+- name: repos | Configure WLCG repository
+  when: grid_install_wlcg_repo | bool
+  block:
+    - name: repos | Import WLCG gpgpkey
+      ansible.builtin.rpm_key:
+        state: present
+        key: "http://linuxsoft.cern.ch/wlcg/RPM-GPG-KEY-wlcg"
 
-- name: Copy WLCG gpgkey
-  copy:
-    src: RPM-GPG-KEY-wlcg
-    dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-wlcg
-    mode: "0644"
+    - name: repos | Install WLCG release repository
+      ansible.builtin.package:
+        name: "http://linuxsoft.cern.ch/wlcg/el9/x86_64/wlcg-repo-1.0.0-1.el9.noarch.rpm"
+        state: present
 
-- name: Import WLCG gpgkey
-  rpm_key:
-    state: present
-    key: /etc/pki/rpm-gpg/RPM-GPG-KEY-wlcg
+
+- name: repos | Configure UMD repositories
+  when: grid_install_umd_repo | bool
+  block:
+    - name: "repos | Import UMD GPG keys"
+      ansible.builtin.rpm_key:
+        state: "present"
+        key: "{{ item }}"
+      loop:
+        - "https://repository.egi.eu/sw/production/umd/UMD-5-RPM-PGP-KEY"
+        - "https://repository.egi.eu/sw/production/umd/UMD-RPM-PGP-KEY"
+
+    - name: repos | Install UMD release repository
+      ansible.builtin.package:
+        name: "https://repository.egi.eu/sw/production/umd/5/al9/release/x86_64/umd-release-5.0.0-1.al9.alma.noarch.rpm"
+        state: present

@@ -6,7 +6,7 @@ Inspired by the [Ansible Role UMD](https://github.com/EGI-Foundation/ansible-rol
 
 ## Requirements
 
--   EL6/7
+-   EL9
 -   EPEL
 
 ## Role Variables
@@ -60,40 +60,12 @@ Details for the parameters see [Nikhef Wiki](https://wiki.nikhef.nl/grid/FetchCR
 A list of Virtual Organisations (VOs) to be configured. The detail of the configuration is
 taken from the [EGI Operation Portal](https://operations-portal.egi.eu/)
 
-    grid_voinfo_url: http://cclavoisier01.in2p3.fr:8080/lavoisier/voVoms?accept=json
-
-URL to retrieve the information on the VOs. Updating the VO Info is
-performed offline and the new info has to be added to the repository,
-
-    grid_install_voms_client: false
-
-Install VOMS client packages. Usually not required, as packages will be
-requested by other installations
-
-    grid_voms_client_pkgs:
-      - voms-clients-cpp
-      - voms-clients-java
-
-VOMS client packages to be installed.
-
     grid_host_certificate: {}
 
 Install host certificate. The certificates is provided as hash
 -   cert: path to host certificate
 -   key: path to private host key. It should be secured with ansible-vault
 
-
-    grid_dummy_host_certificate: false | true | 'caonly'
-
-Install an insecure dummy host certificate for CI. If 'caonly'
-is requested only the CA will be configured.  __Not to be used in production__
-
-    grid_dummy_ca:
-      cert: DummyCA.crt
-      key: DummyCA.key
-      hash: be034f91
-
-Dummy CA distributed with the role.
 
 ## Example Playbook
 
