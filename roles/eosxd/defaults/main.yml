@@ -1,12 +1,11 @@
 ---
 # defaults file for role-eosxd
-role_eosxd_eos_upstream: true
-role_eosxd_epel_upstream: true
-role_eosxd_mount_point: /eos
-role_eosxd_fstab_state: "absent"
-role_eosxd_shared_mount: 1
-role_eosxd_krb5: 0
-role_eosxd_gsi_first: 1
-role_eosxd_sss: 1
-role_eosxd_sss_keytab_file: /etc/eos.keytab
-role_eosxd_keytab_entries: []
+eosxd_use_upstream_repos: true
+eosxd_mount_point: /eos
+eosxd_fstab_state: "absent"
+eosxd_shared_mount: 1
+eosxd_krb5: 0
+eosxd_gsi_first: 1
+eosxd_sss: 1
+eosxd_sss_keytab_file: /etc/eos.keytab
+eosxd_keytab_entries: []

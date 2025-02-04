@@ -3,7 +3,7 @@
   hosts: all
   tasks:
     - name: "Include eosxd role"
-      include_role:
-        name: "eosxd"
+      ansible.builtin.include_role:
+        name: eosxd
       vars:
-        role_eosxd_mgmt_alias: "eos.domain.com"
+        eosxd_mgmt_alias: "eos.domain.com"
