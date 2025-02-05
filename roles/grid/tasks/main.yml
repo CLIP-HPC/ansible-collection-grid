@@ -24,6 +24,6 @@
   tags: ["grid", "certificate"]
 
 - name: Configure as UI/WN node
-  ansible.builtin.include_tasks: node.yml
-  when: grid_node_type | default('') != ''
+  ansible.builtin.import_tasks: node.yml
+  when: grid_node_type
   tags: ["grid", "node"]

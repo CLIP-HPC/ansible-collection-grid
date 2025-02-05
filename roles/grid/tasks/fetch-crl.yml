@@ -5,3 +5,14 @@
   ansible.builtin.package:
     name: fetch-crl
     state: present
+
+- name: fetch-crl | Enable fetch-crl timer
+  ansible.builtin.systemd:
+    name: fetch-crl.timer
+    enabled: true
+    daemon_reload: true
+
+- name: fetch-crl | Start timer
+  ansible.builtin.systemd:
+    name: fetch-crl.timer
+    state: started

@@ -1,10 +1,16 @@
 ---
-- name: voms | Install VOMS files
+- name: voms | Install VOMS (except belle) files
   ansible.builtin.package:
     state: installed
     name: "wlcg-iam-vomses-{{ item }}"
   loop: "{{ grid_vos }}"
   when: item in ['alice', 'atlas', 'cms', 'dteam', 'lhcb', 'ops']
+
+- name: voms | Install VOMS ALL (belle)
+  ansible.builtin.package:
+    state: installed
+    name: "desy-voms-all"
+  when: "'belle' in grid_vos"
 
 - name: voms | Install VOMS LSC files
   ansible.builtin.package:

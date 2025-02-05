@@ -5,7 +5,7 @@
   tasks:
     - name: "Include grid role"
       ansible.builtin.include_role:
-        name: clip.grid.grid
+        name: grid
       vars:
         grid_vos:
           - cms
