@@ -11,3 +11,8 @@
       ansible.builtin.package:
         name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
         state: present
+
+    - name: Enable CRB Repository
+      ansible.builtin.command: /usr/bin/dnf config-manager --set-enabled crb
+      register: enable_crb_result
+      changed_when: true

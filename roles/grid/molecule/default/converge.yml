@@ -11,3 +11,4 @@
           - cms
           - alice
           - ops
+        grid_node_type: ui

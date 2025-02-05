@@ -7,3 +7,9 @@ grid_enable_certificates: true
 grid_fetchcrl_options: []
 grid_vos: []
 grid_host_certificate: {}
+
+# Set to ui or wn if the node should also be configured either as a UI or WN node
+grid_node_type:
+
+# Installs HEP_OS package. Only relevant when grid_node_type is set to UI or WN
+grid_install_hepos: true
