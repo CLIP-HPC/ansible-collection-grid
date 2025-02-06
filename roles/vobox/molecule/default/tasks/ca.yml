@@ -1,0 +1,56 @@
+---
+- name: ca | Install packages for dummy cert generation
+  ansible.builtin.package:
+    name:
+      - python3-cryptography
+    state: present
+
+- name: ca | Create /etc/grid-security/certificates folder
+  ansible.builtin.file:
+    state: directory
+    path: /etc/grid-security/certificates
+    mode: "0644"
+
+- name: ca | Create key for dummy CA
+  community.crypto.openssl_privatekey:
+    path: /root/DummyCA.key
+    size: 2048
+
+- name: ca | Generate an OpenSSL Certificate Signing Request
+  community.crypto.openssl_csr:
+    path: /root/DummyCA.csr
+    privatekey_path: /root/DummyCA.key
+    common_name: grid.vbc.ac.at
+
+- name: ca | Create a dummy root CA
+  community.crypto.x509_certificate:
+    path: /etc/grid-security/certificates/DummyCA.pem
+    privatekey_path: /root/DummyCA.key
+    csr_path: /root/DummyCA.csr
+    provider: selfsigned
+
+- name: ca | Create /srv/certificates folder
+  ansible.builtin.file:
+    state: directory
+    path: /srv/certificates
+    mode: "0600"
+
+- name: ca | Create key for hostcert
+  community.crypto.openssl_privatekey:
+    path: /srv/certificates/host.key
+    size: 2048
+
+
+- name: ca | Generate an OpenSSL Certificate Signing Request
+  community.crypto.openssl_csr:
+    path: /srv/certificates/host.csr
+    privatekey_path: /srv/certificates/host.key
+    common_name: vobox.grid.vbc.ac.at
+
+- name: ca | Create certificate for hostcert
+  community.crypto.x509_certificate:
+    path: /srv/certificates/host.crt
+    csr_path: /srv/certificates/host.csr
+    ownca_path: /etc/grid-security/certificates/DummyCA.pem
+    ownca_privatekey_path: /root/DummyCA.key
+    provider: ownca

@@ -1,43 +1,24 @@
 ---
 - name: Converge
   hosts: all
-
-  pre_tasks:
-    - name: Enable EPEL repository
-      package:
-        name: epel-release
-        state: present
-
   tasks:
     - name: Include vobox role
-      include_role:
+      ansible.builtin.include_role:
         name: vobox
       vars:
-        role_vobox_create_user: true
-        grid_host_certificate:
-          cert: /srv/certificates/host.crt
-          key: /srv/certificates/host.key
-          remote_src: true
-        role_vobox_storage_element: se.grid.vbc.ac.at
-        role_vobox_host: vobox.grid.vbc.ac.at
-        role_vobox_sitename: T2_AT_VIENNA
-        role_vobox_vos:
-          - cms
-          - alice
-        role_vobox_accounts:
-          - name: "grid.cms.sgm"
-            uid: 44050
-            primary_group: role.grid.cms.sgm
-            primary_gid: 44050
-            secondary_group: role.grid.cms
-            secondary_gid: 49995
-            vo: cms
-            fqan: /cms/Role=lcgadmin
-          - name: "grid.alice.smg01"
-            uid: 45450
-            primary_group: role.grid.alice.sgm
-            primary_gid: 45450
-            secondary_group: role.grid.alice
-            secondary_gid: 49996
-            vo: alice
-            fqan: /alice/Role=lcgadmin
+        vobox_create_user: true
+        vobox_host: vobox.grid.vbc.ac.at
+        vobox_sitename: T2_AT_VIENNA
+        vobox_vo: alice
+        vobox_account:
+          name: "grid.alice.smg01"
+          uid: 45450
+          group: role.grid.alice.sgm
+          gid: 45450
+          vo: alice
+          fqan: /alice/Role=lcgadmin
+          mappings:
+            - /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=grigoras/CN=650724/CN=Costin Grigoras
+            - /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=lbetev/CN=374855/CN=Latchezar Betev
+            - /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=maarten/CN=410032/CN=Maarten Litmaath
+            - /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=mstoretv/CN=767601/CN=Maksim Melnik Storetvedt

@@ -1,5 +1,4 @@
 ---
 # defaults file for hephyvienna.vobox
-role_vobox_create_user: false
-role_vobox_accounts: []
-grid_host_certificate: []
+vobox_create_user: false
+vobox_accounts: {}

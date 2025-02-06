@@ -1,0 +1,29 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Get Proxy Renewal service status
+      ansible.builtin.systemd:
+        name: "alice-box-proxyrenewal.service"
+      register: proxy_service_info
+
+    - name: Get gsisshd service status
+      ansible.builtin.systemd:
+        name: "gsisshd.service"
+      register: gsisshd_service_info
+
+    - name: Assert that Proxy Renewal service is running
+      ansible.builtin.assert:
+        that:
+          - proxy_service_info.status.ActiveState == 'active'
+        fail_msg: "Proxy Renewal service is not running"
+        success_msg: "Proxy Renewal service is running"
+
+
+    - name: Assert that gsisshd services are running and enabled
+      ansible.builtin.assert:
+        that:
+          - gsisshd_service_info.status.ActiveState == 'active'
+          - gsisshd_service_info.status.UnitFileState == 'enabled'
+        fail_msg: "gsisshd service is not running and enabled"
+        success_msg: "gsisshd service is running and enabled"

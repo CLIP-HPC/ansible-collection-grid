@@ -9,18 +9,18 @@ lint: |
   ansible-lint
   flake8
 platforms:
-  - name: instance-${INSTANCE_ID:-local}
+  - name: instance-rocky9-${INSTANCE_ID:-local}
     hostname: vobox.grid.vbc.ac.at
-    image: ${MOLECULE_IMAGE:-'centos/systemd:latest'}
-    command: /sbin/init
+    image: rockylinux-systemd:9.3
+    privileged: true # required for DBUS
+    command: /usr/sbin/init
+    cgroupns_mode: host
     capabilities:
       - SYS_ADMIN
     tmpfs:
       - /tmp
       - /run
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
 provisioner:
   name: ansible
-verifier:
-  name: testinfra
