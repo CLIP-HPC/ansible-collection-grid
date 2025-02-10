@@ -1,15 +1,14 @@
 ---
 # tasks file for htcondor-ce role
 - name: Install repositories
-  include_tasks: repos.yml
+  ansible.builtin.import_tasks: repos.yml
   when: htcondor_ce_repo_install
+  tags: ['htcondor-ce', 'repos']
 
 - name: Install HTCondor CE
-  include_tasks: htcondor-ce.yml
+  ansible.builtin.import_tasks: htcondor-ce.yml
+  tags: ['htcondor-ce', 'install']
 
 - name: Install APEL
-  include_tasks: apel.yml
-
-- name: Install BDII
-  include_tasks: bdii.yml
-  when: htcondor_ce_enable_bdii
+  ansible.builtin.import_tasks: apel.yml
+  tags: ['htcondor-ce', 'apel']

@@ -1,32 +1,49 @@
 ---
-- name: Install pkgs
-  yum:
+- name: htcondor-ce | Install pkgs
+  ansible.builtin.package:
     name:
       - 'htcondor-ce-client'
       - "htcondor-ce-view"
       - "htcondor-ce"
-      - "htcondor-ce-{{ htcondor_ce_batch_system }}"
-      - "lcmaps"
+      - "htcondor-ce-{{ htcondor_ce_lrms }}"
     state: installed
 
-- name: Configure HTCondor CE
-  template:
+- name: htcondor-ce | Configure HTCondor CE
+  ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "/etc/condor-ce/{{ item.dest }}"
     mode: "0644"
   loop:
-    - src: job-routes.conf.j2
-      dest: config.d/60-job-routes.conf
     - src: local.conf.j2
       dest: config.d/99-local.conf
-    - src: scitokens.conf.j2
-      dest: mapfiles.d/10-scitokens.conf
     - src: files/01-ce-auth.conf
       dest: config.d/01-ce-auth.conf
-  notify: reconfigure htcondor_ce
+    - src: files/90-ssl-auth.conf
+      dest: config.d/90-ssl-auth.conf
+    - src: files/99-voms.conf
+      dest: config.d/99-voms.conf
+    - src: files/99-debug.conf
+      dest: config.d/99-debug.conf
+  notify: Reconfigure htcondor_ce
 
-- name: Disable WN proxy renewal
-  lineinfile:
+- name: htcondor-ce | Copy HTCondor-CE mapfiles
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/etc/condor-ce/mapfiles.d/"
+    mode: "0644"
+  loop: "{{ htcondor_ce_mapfiles }}"
+  notify: Reconfigure htcondor_ce
+
+- name: htcondor-ce | Configure HTCondor CE job routes
+  ansible.builtin.template:
+    src: "{{ htcondor_ce_job_route_file }}"
+    dest: /etc/condor-ce/config.d/
+    mode: "0644"
+  when: htcondor_ce_job_route_file and htcondor_ce_job_route_file | length > 0
+  notify: Reconfigure htcondor_ce
+
+- name: htcondor-ce | Disable WN proxy renewal
+  ansible.builtin.lineinfile:
     state: present
     line: "{{ item.line }}"
     regex: "{{ item.regex }}"
@@ -41,19 +58,9 @@
     - line: "blah_shared_directories={{ htcondor_ce_shared_dir | unique | join(':') }}"
       regex: '^blah_shared_directories'
 
-- name: Configure HTCondor CE sysconfig
-  lineinfile:
-    path: /etc/sysconfig/condor-ce
-    regexp: "^export LLGT_RUN_LCAS"
-    line: "export LLGT_RUN_LCAS=no"
-  notify: restart htcondor_ce
 
-- name: Enable static shadow
-  include_tasks: static-shadow.yml
-  when: htcondor_ce_enable_static_shadow
-
-- name: Create condor spool directory
-  file:
+- name: htcondor-ce | Create condor spool directory
+  ansible.builtin.file:
     state: directory
     group: condor
     owner: condor
@@ -61,16 +68,8 @@
     path: "{{ htcondor_ce_spool_dir }}"
   when: htcondor_ce_spool_dir is defined and htcondor_ce_spool_dir
 
-- name: Enable argus authorisation
-  include_tasks: auth-argus.yml
-  when: htcondor_ce_auth == 'argus'
-
-- name: Enable lcmaps authorisation
-  include_tasks: auth-lcmaps.yml
-  when: htcondor_ce_auth == 'lcmaps'
-
-- name: Start HTCondor CE
-  service:
+- name: htcondor-ce | Start HTCondor CE
+  ansible.builtin.service:
     name: condor-ce
     state: started
     enabled: true

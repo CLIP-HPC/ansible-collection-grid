@@ -18,55 +18,7 @@ There is also the [OSG documentation](https://bbockelm.github.io/docs/compute-el
 
 Install HTCondor repository
 
-    htcondor_ce_repo_development_enable: false
 
-Enable development repo for latest version
-
-    htcondor_ce_batch_system: slurm
-
-Select batch system (only slurm tested)
-
-    htcondor_ce_enable_static_shadow: false
-
-Did not test this feature.
-
-    htcondor_ce_enable_bdii: true
-
-Enable BDII publictaion of the service
-
-    htcondor_ce_uid_domain: "{{ ansible_domain }}"
-
-Recognise local condor daemons as friendly (not useful for batch system deployment)
-
-    htcondor_ce_condor_view_hosts: []
-
-Condor View Hosts routes your collector information to global or site collectors
-
-    htcondor_ce_pool_collector_str: ''
-
-Set appropriate place to route.
-
-    htcondor_ce_gsi_regexp: '^\/DC\=ch\/DC\=cern\/OU\=computers\/CN\=(host\/)?([A-Za-z0-9.\-]*)$'
-
-
-    htcondor_ce_benchmark_result: 10.00-HEP-SPEC06
-    htcondor_ce_execution_env_cores: 16
-    htcondor_ce_election_hosts:
-      - "{{ ansible_fqdn }}"
-
-For publication in the BDII
-
-    htcondor_ce_argus_server: argus.hephy.oeaw.ac.at
-
-Argus server
-
-    htcondor_ce_argus_port: 8154
-
-Argus server port
-
-    htcondor_ce_argus_resourceid: http://authz-interop.org/xacml/resource/resource-type/ce
-
-Argus resource id
 
 ## Dependencies
 

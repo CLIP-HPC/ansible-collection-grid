@@ -1,5 +1,10 @@
 ---
-- name: Install HTCondor stable repository
-  package:
-    name: "https://research.cs.wisc.edu/htcondor/repo/9.0/htcondor-release-current.el{{ ansible_distribution_major_version }}.noarch.rpm"
+- name: repos | Imort HTCondor GPG key
+  ansible.builtin.rpm_key:
+    key: "https://research.cs.wisc.edu/htcondor/repo/keys/HTCondor-23.x-Key"
+    state: present
+
+- name: repos | Install HTCondor stable repository
+  ansible.builtin.package:
+    name: "https://research.cs.wisc.edu/htcondor/repo/23.x/htcondor-release-current.el9.noarch.rpm"
     state: installed
