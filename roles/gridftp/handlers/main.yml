@@ -1,7 +1,0 @@
----
-# handlers file for gridftp role
-
-- name: Restart gridftp-server
-  service:
-    name: xrootd-gridftp
-    state: restarted
