@@ -4,8 +4,8 @@ on:
   # Run CI against all pushes (direct commits, also merged PRs), Pull Requests
   push:
   pull_request:
-  schedule:
-    - cron: '0 6 * * *'
+  # schedule:
+  #   - cron: '0 6 * * *'
   workflow_dispatch:
 
 concurrency:
@@ -83,7 +83,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: dorny/paths-filter@v2
+      # Add a step to detect the event type
+      - name: Set test scope
+        id: scope
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" || "${{ github.event_name }}" == "schedule" ]]; then
+            echo "all_roles=true" >> $GITHUB_OUTPUT
+          else
+            echo "all_roles=false" >> $GITHUB_OUTPUT
+          fi
+
+      # Add a step to list all roles when running full tests
+      - name: List all roles
+        id: list-roles
+        if: steps.scope.outputs.all_roles == 'true'
+        run: |
+          echo "role_files=$(find roles/* -maxdepth 0 -type d | tr '\n' ' ')" >> $GITHUB_OUTPUT
+
+      - name: Find changeset
+        if: steps.scope.outputs.all_roles == 'false'
+        uses: dorny/paths-filter@v2
         id: filter
         with:
           base: ${{ github.ref }}
@@ -92,12 +111,17 @@ jobs:
             role:
               - roles/*/**
 
-      - name: transform to directories
+      - name: Transform to directories
         id: transform
         continue-on-error: false
         run: |
           folders=()
-          for f in ${{ steps.filter.outputs.role_files }};
+          if [[ "${{ steps.scope.outputs.all_roles }}" == "true" ]]; then
+            files="${{ steps.list-roles.outputs.role_files }}"
+          else
+            files="${{ steps.filter.outputs.role_files }}"
+          fi
+          for f in $files;
             do
               echo "Adding $(dirname $f) to folders";
               folders+=($(dirname $f | cut -d'/' -f2));
