@@ -98,7 +98,7 @@ jobs:
         id: list-roles
         if: steps.scope.outputs.all_roles == 'true'
         run: |
-          echo "role_files=$(find roles/* -maxdepth 0 -type d | tr '\n' ' ')" >> $GITHUB_OUTPUT
+          echo "role_folders=$(find roles/* -maxdepth 0 -type d | cut -d'/' -f2 | tr '\n' ' ')" >> $GITHUB_OUTPUT
 
       - name: Find changeset
         if: steps.scope.outputs.all_roles == 'false'
@@ -115,17 +115,16 @@ jobs:
         id: transform
         continue-on-error: false
         run: |
-          folders=()
           if [[ "${{ steps.scope.outputs.all_roles }}" == "true" ]]; then
-            files="${{ steps.list-roles.outputs.role_files }}"
+            folders="${{ steps.list-roles.outputs.role_folders }}"
           else
-            files="${{ steps.filter.outputs.role_files }}"
+            folders=()
+            for f in ${{ steps.filter.outputs.role_files }};
+              do
+                echo "Adding $(dirname $f) to folders";
+                folders+=($(dirname $f | cut -d'/' -f2));
+            done
           fi
-          for f in $files;
-            do
-              echo "Adding $(dirname $f) to folders";
-              folders+=($(dirname $f | cut -d'/' -f2));
-          done
           unique_folders=($(printf "%s\n" "${folders[@]}" | sort -u | tr '\n' ' '))
           echo "Found ${#unique_folders[@]} roles";
           existing_folders=()
