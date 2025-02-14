@@ -1,0 +1,32 @@
+---
+
+- name: Verify
+  hosts: all
+
+  tasks:
+    - name: Test if site-local-config.xml exists
+      ansible.builtin.stat:
+        path: /cvmfs/cms.cern.ch/SITECONF/local/JobConfig/site-local-config.xml
+      register: site_local_config
+
+    - name: Fail if site-local-config.xml does not exist
+      ansible.builtin.fail:
+        msg: "site-local-config.xml does not exist"
+      when: not site_local_config.stat.exists
+
+
+    - name: Retrieve files/folders in galaxy folders
+      ansible.builtin.find:
+        paths: "/cvmfs/{{ item }}"
+        file_type: any
+      register: galaxy_folders
+      loop:
+        - data.galaxyproject.org
+
+    - name: Fail if galaxy folders are empty
+      ansible.builtin.fail:
+        msg: "The {{ item.item }} folder is empty."
+      when: item.matched == 0
+      loop: "{{ galaxy_folders.results }}"
+      loop_control:
+        label: "{{ item.item }}"

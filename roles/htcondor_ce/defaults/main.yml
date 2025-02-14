@@ -1,29 +1,15 @@
 ---
 # defaults file for htcondor-ce role
 htcondor_ce_repo_install: true
-htcondor_ce_batch_system: slurm
-htcondor_ce_enable_static_shadow: false
-htcondor_ce_enable_bdii: true
-htcondor_ce_uid_domain: "{{ ansible_domain }}"
-htcondor_ce_condor_view_hosts: []
-htcondor_ce_pool_collector_str: ''
-htcondor_ce_gsi_regexp: '^\/DC\=ch\/DC\=cern\/OU\=computers\/CN\=(host\/)?([A-Za-z0-9.\-]*)$'
-htcondor_ce_benchmark_result: 10.00-HEP-SPEC06
-htcondor_ce_execution_env_cores: 38
-htcondor_ce_election_hosts:
-  - "{{ ansible_fqdn }}"
-htcondor_ce_argus_server: argus.hephy.oeaw.ac.at
-htcondor_ce_argus_port: 8154
-htcondor_ce_argus_resourceid: http://authz-interop.org/xacml/resource/resource-type/ce
 htcondor_ce_spool_dir:
 htcondor_ce_home_dir: /users
-htcondor_ce_auth: lcmaps
 htcondor_ce_job_routes: []
-htcondor_ce_shared_dir: ["{{ htcondor_ce_spool_dir}}", "{{htcondor_ce_home_dir}}"]
-htcondor_ce_lrms: "condor"
+htcondor_ce_shared_dir: ["{{ htcondor_ce_spool_dir }}", "{{ htcondor_ce_home_dir }}"]
+htcondor_ce_lrms: "slurm"
 htcondor_ce_apel_db_hostname: localhost
 htcondor_ce_apel_db_username: apel
 htcondor_ce_apel_db_password:
 htcondor_ce_apel_site_name:
 htcondor_ce_apel_spec_value: 1.0
-htcondor_ce_scitoken_mappings: []
+htcondor_ce_mapfiles: []
+htcondor_ce_job_route_file:

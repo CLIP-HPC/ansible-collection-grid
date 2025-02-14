@@ -1,0 +1,16 @@
+- name: Verify
+  hosts: all
+
+  tasks:
+    - name: Check fetch-crl timer
+      ansible.builtin.systemd:
+        name: fetch-crl.timer
+      register: fetch_crl_timer_info
+
+    - name: Assert timer is running and enabled
+      ansible.builtin.assert:
+        that:
+          - fetch_crl_timer_info.status.ActiveState == "active"
+          - fetch_crl_timer_info.status.UnitFileState == "enabled"
+        fail_msg: "Fetch-crl timer is not running or not enabled"
+        success_msg: "Fetch-crl timer is running and enabled"

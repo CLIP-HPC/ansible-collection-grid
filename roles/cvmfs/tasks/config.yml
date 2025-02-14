@@ -1,0 +1,60 @@
+---
+
+- name: config | Configure CVMFS
+  ansible.builtin.template:
+    src: default.local.j2
+    dest: /etc/cvmfs/default.local
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  notify: "Reload cvmfs config"
+
+- name: config | Configure respositories
+  ansible.builtin.template:
+    src: repository.local.j2
+    dest: "/etc/cvmfs/config.d/{{ repository.name }}.local"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  loop: "{{ cvmfs_repositories }}"
+  loop_control:
+    loop_var: repository
+  when: "'env_vars' in repository or 'config' in repository"
+  notify: "Reload cvmfs config"
+
+- name: config | Configure domains
+  ansible.builtin.template:
+    src: domain.conf.j2
+    dest: "/etc/cvmfs/domain.d/{{ domain.name }}.conf"
+    mode: "0644"
+    owner: "root"
+    group: "root"
+  loop: "{{ cvmfs_domains }}"
+  loop_control:
+    loop_var: domain
+  notify: "Reload cvmfs config"
+
+- name: config | Create key folder for domains
+  ansible.builtin.file:
+    state: directory
+    path: "/etc/cvmfs/keys/{{ domain.name }}"
+    mode: "0755"
+    owner: "root"
+    group: "root"
+  loop: "{{ cvmfs_domains }}"
+  loop_control:
+    loop_var: domain
+  notify: "Reload cvmfs config"
+
+
+- name: config | Create keys in key folder
+  ansible.builtin.copy:
+    content: "{{ domain.1.key }}"
+    dest: "/etc/cvmfs/keys/{{ domain.0.name }}/{{ domain.1.name }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: root
+    mode: "0444"
+  loop: "{{ cvmfs_domains | subelements('keys') }}"
+  loop_control:
+    loop_var: domain
+  notify: "Reload cvmfs config"

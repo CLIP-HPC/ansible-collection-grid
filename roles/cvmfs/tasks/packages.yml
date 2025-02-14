@@ -1,0 +1,9 @@
+---
+- name: packages | Install CVMFS client and configuration packages
+  ansible.builtin.package:
+    name: "{{ ['cvmfs'] + cvmfs_config_repos }}"
+
+- name: packages | Install/Uninstall cvmfs-auto-setup package
+  ansible.builtin.package:
+    name: "cvmfs-auto-setup"
+    state: "{{ (cvmfs_auto_setup | bool) | ternary('present', 'absent') }}"

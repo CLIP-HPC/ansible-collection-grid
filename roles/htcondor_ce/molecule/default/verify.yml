@@ -1,0 +1,30 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Get condor-ce service status
+      ansible.builtin.systemd:
+        name: "condor-ce"
+      register: condor_service_info
+
+    - name: Get condor-ce-apel timer status
+      ansible.builtin.systemd:
+        name: "condor-ce-apel.timer"
+      register: apel_service_info
+
+    - name: Assert that condor-ce service is running
+      ansible.builtin.assert:
+        that:
+          - condor_service_info.status.ActiveState == 'active'
+          - condor_service_info.status.UnitFileState == 'enabled'
+        fail_msg: "condor-ce service is not running and enabled"
+        success_msg: "condor-ce service is running and enabled"
+
+
+    - name: Assert that condor-ce-apel timer is running and enabled
+      ansible.builtin.assert:
+        that:
+          - apel_service_info.status.ActiveState == 'active'
+          - apel_service_info.status.UnitFileState == 'enabled'
+        fail_msg: "condor-ce-apel timer is not running and enabled"
+        success_msg: "condor-ce-apel timer is running and enabled"

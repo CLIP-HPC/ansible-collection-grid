@@ -1,47 +1,20 @@
 ---
-- name: Create configuration directories
-  file:
-    path: "{{ item }}"
-    state: directory
-    mode: 0755
-  loop:
-    - "{{ grid_security_dir }}/vomsdir"
-    - "{{ grid_vomses_dir }}"
-
-- name: Create configuration directories for the VOs
-  file:
-    path: "{{ grid_security_dir }}/vomsdir/{{ item }}"
-    state: directory
-    mode: 0755
-  loop: "{{ grid_vos }}"
-
-- name: Install VOMS LSC files
-  package:
+- name: voms | Install VOMS (except belle) files
+  ansible.builtin.package:
     state: installed
-    name: "wlcg-voms-{{ vo }}"
+    name: "wlcg-iam-vomses-{{ item }}"
   loop: "{{ grid_vos }}"
-  loop_control:
-    loop_var: vo
-  when: vo in ['alice', 'atlas', 'cms', 'lhcb', 'ops', 'dteam']
+  when: item in ['alice', 'atlas', 'cms', 'dteam', 'lhcb', 'ops']
 
-# Workaround until https://twiki.cern.ch/twiki/bin/view/LCG/VOMSLSCfileConfiguration#LSC_file_configuration_with_rpms finished
-- name: Install VOMS IAM files
-  package:
+- name: voms | Install VOMS ALL (belle)
+  ansible.builtin.package:
     state: installed
-    name: "wlcg-iam-lsc-{{ vo }}" # after 4th of october change to wlcg-iam-voms-{{ vo }}
-  loop: "{{ grid_vos }}"
-  loop_control:
-    loop_var: vo
-  when: vo in ['alice', 'atlas', 'cms', 'lhcb']
+    name: "desy-voms-all"
+  when: "'belle' in grid_vos"
 
-- name: Read VO info
-  include_vars:
-    file: voinfo.yml
-    name: voinfo
-
-- name: Configure VOs # for th VOs that are not configured with RPM above (i.e. belle)
-  include_tasks: configure-vo.yml
+- name: voms | Install VOMS LSC files
+  ansible.builtin.package:
+    state: installed
+    name: "wlcg-iam-lsc-{{ item }}"
   loop: "{{ grid_vos }}"
-  loop_control:
-    loop_var: vo
-  when: vo not in ['alice', 'atlas', 'cms', 'lhcb', 'ops', 'dteam']
+  when: item in ['alice', 'atlas','dteam', 'cms', 'lhcb', 'ops']

@@ -1,0 +1,28 @@
+---
+- name: mount | Set autofs timeout
+  ansible.builtin.lineinfile:
+    path: /etc/autofs.conf
+    regex: "^timeout"
+    line: "timeout = {{ cvmfs_autofs_timeout }}"
+  when:
+    - cvmfs_auto_setup
+    - cvmfs_autofs_timeout is defined
+  notify: "autofs reconfig"
+
+# Use 'nofail' in options so that the system can still boot if there is a problem with a CVMFS repo.
+# Some health checks (e.g. cvmfs_config probe) should be used to confirm that each repository is available when needed.
+- name: mount | Set up static repository mounts
+  vars:
+    cvmfs_config_mount_opts: "{{ ',x-systemd.requires-mounts-for=/cvmfs/' + cvmfs_config_repository if cvmfs_config_repository and item.name != cvmfs_config_repository else '' }}" # noqa yaml[line-length]
+  ansible.posix.mount:
+    path: "/cvmfs/{{ item.name }}"
+    fstype: "cvmfs"
+    src: "{{ item.name }}"
+    opts: "{{ cvmfs_default_mount_opts }}{{ cvmfs_config_mount_opts }}"
+    state: "{% if not cvmfs_auto_setup %}mounted{% elif cvmfs_force_unmount %}absent{% endif %}"
+  when: (not cvmfs_auto_setup) or (cvmfs_force_unmount)
+  loop: "{{ cvmfs_repositories }}"
+
+# Apply config changes before testing
+- name: mount | Flush handlers
+  ansible.builtin.meta: flush_handlers

@@ -1,33 +1,16 @@
 ---
-# tasks regarding repo handling
-- name: Enable EPEL
-  package:
-    name: epel-release
-    state: "{{ (role_eosxd_epel_upstream) | ternary('present', 'absent') }}"
-  notify: yum-clean-metadata
-
-- name: Add upstream EOS Citrine repo
-  yum_repository:
-    name: eos-citrine
-    description: EOS 4.0 Citrine repop
-    state: "{{ (role_eosxd_eos_upstream) | ternary('present', 'absent') }}"
-    baseurl: https://storage-ci.web.cern.ch/storage-ci/eos/citrine/tag/el-7/x86_64/
+- name: repos | Add Upstream EOS Depends repository
+  ansible.builtin.yum_repository:
+    name: eos-diopside-depend
+    description: EOS 5.x Diopside Depend repo
+    state: "{{ (eosxd_use_upstream_repos) | ternary('present', 'absent') }}"
+    baseurl: https://storage-ci.web.cern.ch/storage-ci/eos/diopside-depend/el-9/x86_64/
     gpgcheck: false
-  notify: yum-clean-metadata
 
-- name: Add upstream EOS Citrine dev repo
-  yum_repository:
-    name: eos-citrine-dev
-    description: EOS 4.0 Citrine repop
+- name: repos | Add upstream EOS Tag repository
+  ansible.builtin.yum_repository:
+    name: eos-citrine-tag
+    description: EOS 5.x Diopside Tag repo
+    state: "{{ (eosxd_use_upstream_repos) | ternary('present', 'absent') }}"
+    baseurl: https://storage-ci.web.cern.ch/storage-ci/eos/diopside/tag/testing/el-9/x86_64/
     gpgcheck: false
-    state: "{{ (role_eosxd_eos_upstream) | ternary('present', 'absent') }}"
-    baseurl: https://storage-ci.web.cern.ch/storage-ci/eos/citrine-depend/el-7/x86_64/
-  notify: yum-clean-metadata
-
-- name: Flush handlers
-  meta: flush_handlers
-
-- name: Install eos-fusex
-  package:
-    name: eos-fusex
-    state: installed

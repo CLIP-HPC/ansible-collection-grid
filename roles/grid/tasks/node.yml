@@ -1,0 +1,12 @@
+---
+
+- name: node | Install UI/WN meta package
+  ansible.builtin.package:
+    name: "{{ (grid_node_type == 'ui') | ternary('ui', 'wn') }}"
+    state: present
+
+- name: node | Install HEP_OSlibs
+  ansible.builtin.package:
+    name: "HEP_OSlibs"
+    state: present
+  when: grid_install_hepos | bool

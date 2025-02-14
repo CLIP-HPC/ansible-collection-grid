@@ -9,30 +9,18 @@ lint: |
   ansible-lint
   flake8
 platforms:
-  - name: instance-centos7-${INSTANCE_ID:-local}
-    hostname: ce-7.grid.vbc.ac.at
-    image: centos/systemd:latest
-    command: /sbin/init
+  - name: molecule-rocky9-htcondorce
+    hostname: ce-9.grid.vbc.ac.at
+    image: rockylinux-systemd:9.3
+    privileged: true # required for DBUS
+    command: /usr/sbin/init
+    cgroupns_mode: host
     capabilities:
       - SYS_ADMIN
     tmpfs:
       - /tmp
       - /run
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  # - name: instance-stream8-${INSTANCE_ID:-local}
-  #   image: quay.io/centos/centos:stream8
-  #   hostname: ce-8.grid.vbc.ac.at
-  #   command: /sbin/init
-  #   pre_build_image: true
-  #   capabilities:
-  #     - SYS_ADMIN
-  #   tmpfs:
-  #     - /tmp
-  #     - /run
-  #   volumes:
-  #     - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
 provisioner:
   name: ansible
-verifier:
-  name: testinfra

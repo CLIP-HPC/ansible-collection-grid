@@ -2,62 +2,29 @@
 - name: Prepare
   hosts: all
   vars:
-    poolaccounts:
-      - name: 'cms%03d'
-        uid: 10000
-        number: 2
-        step: 2
-        description: 'Standard User of the CMS VO'
-        group: cms
-        gid: 10000
-      - name: 'cmsprd%02d'
-        uid: 11000
-        number: 2
-        step: 2
-        description: 'Production User of the CMS VO'
-        group: cmsprd
-        gid: 11000
-        groups: cms
-      - name: 'cmspil%02d'
-        uid: 12000
-        number: 2
-        step: 2
-        description: 'Pilot User of the CMS VO'
-        group: cmspil
-        gid: 12000
-        groups: cms
-      - name: 'cmssgm'
-        uid: 13000
-        description: 'SW User of the CMS VO'
-        group: cmssgm
-        gid: 13000
-        groups: cms
-    grid_dummy_host_certificate: true
     grid_vos:
       - cms
-
-  pre_tasks:
-    - name: Enable EPEL
-      package:
-        name: epel-release
-        state: present
   tasks:
+
+    - name: Import EPEL Key
+      ansible.builtin.rpm_key:
+        key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
+        state: present
+
+    - name: Enable EPEL repository
+      ansible.builtin.package:
+        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+        state: present
+
+    - name: Enable CRB Repository
+      ansible.builtin.command: /usr/bin/dnf config-manager --set-enabled crb
+      register: enable_crb_result
+      changed_when: true
+
     - name: "Include grid role"
-      include_role:
-        name: "grid"
+      ansible.builtin.include_role:
+        name: clip.grid.grid
       vars:
-        grid_umd_repo_priority: 98
-        grid_umd_repo_exclude:
-          - dpm-*
-          - lfc-*
-          - lcgdm-*
-          - python2-dpm-*
-          - python2-lfc-*
-          - python2-lcgdm-*
-          - xrootd-*
-          - "*condor*"
         grid_vos:
           - cms
-    - name: "Include poolaccounts role"
-      include_role:
-        name: "poolaccounts"
+        grid_install_umd_repo: false

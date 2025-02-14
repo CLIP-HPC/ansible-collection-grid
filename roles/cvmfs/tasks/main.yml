@@ -1,133 +1,26 @@
 ---
 # tasks file for hephy.cvmfs-client
-- name: Load OS specific vars
-  include_vars: "{{ item }}"
-  with_first_found:
-    - "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
-    - "{{ ansible_os_family }}.yml"
-
-- name: Enable CVMFS repository
-  include_tasks: cvmfs-yumrepo.yml
+- name: Install and Configure CVMFS repository
+  ansible.builtin.import_tasks: repo.yml
+  tags: [cvmfs, repos]
   when: cvmfs_manage_yumrepo
 
-- name: Install cvmfs
-  package:
-    name: cvmfs
-    state: installed
+- name: Install CVMFS client and configuration packages
+  ansible.builtin.import_tasks: packages.yml
+  tags: [cvmfs, packages]
 
-- name: Create /cvmfs
-  file:
-    name: /cvmfs
-    state: directory
-    mode: "0755"
-
-- name: Create CVMFS user and group
-  block:
-    - name: Create group
-      group:
-        name: cvmfs
-        system: true
-    - name: Create user
-      user:
-        name: cvmfs
-        group: cvmfs
-        groups: "{{ 'fuse' if cvmfs_fuse_group else '' }}"
-        system: true
-        home: /var/lib/cvmfs
-        shell: /sbin/nologin
-        comment: "CernVM-FS service account"
-  when: cvmfs_manage_cvmfs_user
-
-- name: Set permisson on cache
-  file:
-    path: "{{ cvmfs_cache_base }}"
-    state: directory
-    owner: cvmfs
-    group: cvmfs
-    mode: 0700
-    setype: cvmfs_cache_t
-
-- name: Get size of CVMFS partition
-  set_fact:
-    __cvmfs_partition_size: "{{ ansible_mounts | json_query(jq) }}"
-  vars:
-    jq: "[?mount=='{{ cvmfs_cache_base }}'].size_total"
-  when: cvmfs_quota_limit <= 0
-
-- name: Fail in case the partition size cannot be determined
-  fail:
-    msg: "Cannot determine size of partition for mount point {{ cvmfs_cache_base }}"
-  when: cvmfs_quota_limit <= 0 and __cvmfs_partition_size | length  == 0
+- name: Configure CVMFS cache
+  ansible.builtin.import_tasks: cache.yml
+  tags: [cvmfs, cache]
 
 - name: Configure CVMFS
-  template:
-    src: default.local.j2
-    dest: /etc/cvmfs/default.local
-    mode: "0644"
+  ansible.builtin.import_tasks: config.yml
+  tags: [cvmfs, config]
 
-- name: Configure respositories
-  template:
-    src: repository.local.j2
-    dest: "/etc/cvmfs/config.d/{{ repository.name }}.local"
-    mode: "0644"
-  loop: "{{ cvmfs_repositories }}"
-  loop_control:
-    loop_var: repository
+- name: Mount CVMFS repositories
+  ansible.builtin.import_tasks: mount.yml
+  tags: [cvmfs, mount]
 
-- name: Configure domains
-  template:
-    src: repository.local.j2
-    dest: "/etc/cvmfs/domain.d/{{ repository.name }}"
-    mode: "0644"
-  loop: "{{ cvmfs_domains }}"
-  loop_control:
-    loop_var: repository
-
-- name: Create key folder for domains
-  file:
-    state: directory
-    path: "{{ domain.config['CVMFS_KEYS_DIR'] }}"
-    mode: "0755"
-  loop: "{{ cvmfs_domains }}"
-  loop_control:
-    loop_var: domain
-  when: "'CVMFS_KEYS_DIR' in domain.config"
-
-
-- name: Create keys in key folder
-  copy:
-    content: "{{ domain.1.key }}"
-    dest: "{{ domain.0.config['CVMFS_KEYS_DIR'] }}/{{ domain.1.name }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: root
-    mode: 0444
-  loop: "{{ cvmfs_domains | subelements('keys') }}"
-  loop_control:
-    loop_var: domain
-  when: "'CVMFS_KEYS_DIR' in domain.0.config"
-
-- name: Configure autofs
-  block:
-    - name: Add cvmfs to /etc/auto.master
-      lineinfile:
-        path: /etc/auto.master
-        regexp: "^/cvmfs"
-        line: "/cvmfs  program:/etc/auto.cvmfs"
-      notify: Restart autofs
-    - name: Start autofs
-      service:
-        name: autofs
-        enabled: true
-        state: started
-  when: cvmfs_mount_repositories == 'autofs' and ansible_virtualization_type != 'docker'
-
-- name: Mount cvmfs repositories
-  mount:
-    path: "/cvmfs/{{ item.name }}"
-    src: "{{ item.name }}"
-    state: mounted
-    fstype: cvmfs
-    opts: "{{ cvmfs_default_mount_opts }}{{ ',x-systemd.requires-mounts-for=/cvmfs/config-egi.egi.eu' if item.name != 'config-egi.egi.eu' else '' }}"
-  become: true
-  loop: "{{ cvmfs_repositories }}"
-  when: cvmfs_mount_repositories == 'mount'
+- name: Test CVMFS
+  ansible.builtin.import_tasks: test.yml
+  tags: [cvmfs, test]

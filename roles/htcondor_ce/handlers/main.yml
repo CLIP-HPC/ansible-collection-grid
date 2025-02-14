@@ -1,10 +1,10 @@
 ---
 # handlers file for hephyvienna.htcondor-ce
-- name: reconfigure htcondor_ce
-  command: /usr/bin/condor_ce_reconfig
-  when: not service_bdii.changed | default(true) or not service_condor_ce
+- name: Reconfigure htcondor_ce
+  ansible.builtin.command: /usr/bin/condor_ce_reconfig
+  changed_when: true
 
-- name: restart htcondor_ce
-  service:
+- name: Restart htcondor_ce
+  ansible.builtin.service:
     name: condor-ce
     state: restarted

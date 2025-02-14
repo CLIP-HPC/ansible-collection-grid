@@ -7,10 +7,10 @@ galaxy_info:
   company: Institute for High Energy Physics, Austrian Academy of Sciences
   issue_tracker_url: https://github.com/clip-hpc/ansible-role-vobox/issues
   license: MIT
-  min_ansible_version: 2.7
+  min_ansible_version: "2.7"
   platforms:
     - name: EL
       versions:
-        - 7
+        - "9"
   galaxy_tags: []
 dependencies: []

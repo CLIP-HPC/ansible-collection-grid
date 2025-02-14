@@ -10,9 +10,9 @@ fail () {
 safe_config_val () {
     var=$1
     attr=$2
-    val=$(condor_ce_config_val $attr) ||
+    val=$(condor_ce_config_val "$attr") ||
     fail "Failed to retrieve CE configuration value '$attr'"
-    eval "$var"='$val'
+    eval "$var"="$val"
 }
 
 DATE='today'
@@ -26,7 +26,7 @@ yesterday=$(date -u --date="00:00:00 $DATE - 1 day" +%s)
 safe_config_val OUTPUT_DIR APEL_OUTPUT_DIR
 OUTPUT_FILE="$OUTPUT_DIR/blahp-$(date -u --date="$DATE - 1 day" +%Y%m%d )-$(hostname -s)"
 
-if [ ! -d $OUTPUT_DIR ] || [ ! -w $OUTPUT_DIR ]; then
+if [ ! -d "$OUTPUT_DIR" ] || [ ! -w "$OUTPUT_DIR" ]; then
     echo "Cannot write to $OUTPUT_DIR"
     exit 1
 fi
@@ -48,4 +48,4 @@ TZ=GMT condor_ce_history -const "$CONSTR" \
  -format "\"ceID=${CE_ID}\" " EMPTY \
  -format "\"jobID=%v_${CE_HOST}\" " RoutedFromJobId \
  -format "\"lrmsID=%v\" " GridJobId \
- -format "\"localUser=%s\"\n" Owner | sed -r "$SED_FILTER"  > $OUTPUT_FILE
+ -format "\"localUser=%s\"\n" Owner | sed -r "$SED_FILTER"  > "$OUTPUT_FILE"

@@ -1,36 +1,37 @@
 ---
-# tasks file for hephyvienna.vobox
+# tasks file for clip.grid.vobox
 
-- name: Install host certificate
-  include_tasks: hostcert.yml
-  when: grid_host_certificate | length > 0
 
-- name: Install packages
-  yum:
-    name:
-      - yum-priorities
-      - yum-protectbase
+- name: Assert that account is provided
+  ansible.builtin.assert:
+    that:
+      - vobox_account is defined
+      - vobox_account.name is defined
+      - vobox_account.uid is defined
+      - vobox_account.group is defined
+      - vobox_account.gid is defined
+      - vobox_account.vo is defined
+      - vobox_account.fqan is defined
+
+
+- name: Install firewalld
+  ansible.builtin.package:
+    name: firewalld
     state: installed
 
-- name: Install UMD4 and WLCG repositories
-  yum:
-    name:
-      - http://repository.egi.eu/sw/production/umd/4/centos7/x86_64/updates/umd-release-4.1.3-1.el7.centos.noarch.rpm
-      - http://linuxsoft.cern.ch/wlcg/centos7/x86_64/wlcg-repo-1.0.0-1.el7.noarch.rpm
-    state: installed
+- name: Make sure that firewalld is running
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+    enabled: true
 
 - name: Install WLCG VOBOX
-  yum:
+  ansible.builtin.package:
     name: wlcg-vobox
     state: installed
 
-- name: Patch config_vobox becase we have a dot in unix accounts
-  patch:
-    src: files/config_vobox.patch
-    dest: /opt/glite/yaim/functions/config_vobox
-
 - name: Template site config, users and groups
-  template:
+  ansible.builtin.template:
     src: "{{ item }}.j2"
     dest: "/root/{{ item }}"
     mode: "0644"

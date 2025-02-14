@@ -1,30 +1,34 @@
 ---
-- name: Install APEL pkg
-  yum:
-    name: htcondor-ce-apel
+- name: apel | Install APEL pkg
+  ansible.builtin.package:
+    name:
+      - htcondor-ce-apel
+      - python3-argo-ams-library
     state: installed
 
-- block:
-    - name: Copy Condor-ce Blah apel script
-      copy:
+- name: apel | Configure Custom Batch APEL scripts
+  when: htcondor_ce_lrms != 'condor'
+  block:
+    - name: apel | Copy Condor-ce Blah apel script
+      ansible.builtin.copy:
         src: "apel/condor_ce_blah.sh"
         dest: /usr/share/condor-ce/
         mode: "0755"
 
-    - name: Copy LRMS apel script
-      copy:
+    - name: apel | Copy LRMS apel script
+      ansible.builtin.copy:
         src: "apel/{{ htcondor_ce_lrms }}.sh"
         dest: /usr/share/condor-ce/
         mode: "0755"
 
-    - name: Disable condor_batch_blah.sh
-      lineinfile:
+    - name: apel | Disable condor_batch_blah.sh
+      ansible.builtin.lineinfile:
         path: /usr/share/condor-ce/condor_ce_apel.sh
-        regexp: '^/usr/share/condor-ce/condor_batch_blah.sh '
+        regexp: '^/usr/share/condor-ce/condor_batch_blah.py'
         line: '# /usr/share/condor-ce/condor_batch_blah.sh'
 
-    - name: Add custom apel scripts
-      lineinfile:
+    - name: apel | Add custom apel scripts
+      ansible.builtin.lineinfile:
         path: /usr/share/condor-ce/condor_ce_apel.sh
         regexp: '^/usr/share/condor-ce/{{ item }} '
         line: '/usr/share/condor-ce/{{ item }}'
@@ -33,28 +37,26 @@
         - "{{ htcondor_ce_lrms }}.sh"
         - "condor_ce_blah.sh"
 
-  when: htcondor_ce_lrms != 'condor'
-
-- name: Configure APEL sender
-  copy:
+- name: apel | Configure APEL sender
+  ansible.builtin.copy:
     src: apel/sender.cfg
     dest: "/etc/apel/"
     mode: "0644"
 
-- name: Configure APEL client
-  template:
+- name: apel | Configure APEL client
+  ansible.builtin.template:
     src: templates/apel/client.cfg.j2
     dest: "/etc/apel/client.cfg"
     mode: "0600"
 
-- name: Configure APEL parser
-  template:
+- name: apel | Configure APEL parser
+  ansible.builtin.template:
     src: templates/apel/parser.cfg.j2
     dest: /etc/apel/parser.cfg
     mode: "0600"
 
-- name: Enable and start condor-ce-apel timer
-  service:
+- name: apel | Enable and start condor-ce-apel timer
+  ansible.builtin.service:
     name: condor-ce-apel.timer
     enabled: true
     state: started

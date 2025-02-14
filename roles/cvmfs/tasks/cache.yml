@@ -1,0 +1,21 @@
+---
+- name: cache | Set permisson on cache
+  ansible.builtin.file:
+    path: "{{ cvmfs_cache_base }}"
+    state: directory
+    owner: cvmfs
+    group: cvmfs
+    mode: "0700"
+    setype: cvmfs_cache_t
+
+- name: cache | Get size of CVMFS partition
+  ansible.builtin.set_fact:
+    __cvmfs_partition_size: "{{ ansible_mounts | json_query(jq) }}"
+  vars:
+    jq: "[?mount=='{{ cvmfs_cache_base }}'].size_total"
+  when: cvmfs_quota_limit <= 0
+
+- name: cache | Fail in case the partition size cannot be determined
+  ansible.builtin.fail:
+    msg: "Cannot determine size of partition for mount point {{ cvmfs_cache_base }}"
+  when: cvmfs_quota_limit <= 0 and __cvmfs_partition_size | length  == 0
