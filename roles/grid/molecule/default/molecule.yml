@@ -9,7 +9,7 @@ lint: |
   ansible-lint
   flake8
 platforms:
-  - name: instance-rocky9-${INSTANCE_ID:-local}
+  - name: molecule-rocky9-grid
     command: /usr/sbin/init
     image: rockylinux-systemd:9.3
     cgroupns_mode: host

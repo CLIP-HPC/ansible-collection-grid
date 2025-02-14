@@ -145,7 +145,6 @@ jobs:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           ANSIBLE_ROLES_PATH: "${GITHUB_WORKSPACE}/roles:~/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles"
-            #MOLECULE_PARALLEL: '1'
 
   check:  # This job does nothing and is only used for the branch protection
           # or multi-stage CI jobs, like making sure that all tests pass before

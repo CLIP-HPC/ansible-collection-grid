@@ -9,7 +9,7 @@ lint: |
   ansible-lint
   flake8
 platforms:
-  - name: instance-rocky9-${INSTANCE_ID:-local}
+  - name: molecule-rocky9-cvmfs
     image: rockylinux:9.3
     pre_build_image: true
     privileged: true
