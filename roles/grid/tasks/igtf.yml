@@ -7,7 +7,7 @@
       "https://repository.egi.eu/sw/production/cas/1/current/"
     enabled: true
     gpgcheck: true
-    gpgkey: "https://repository.egi.eu/sw/production/cas/1/GPG-KEY-EUGridPMA-RPM-3"
+    gpgkey: "https://repository.egi.eu/sw/production/cas/1/GPG-KEY-EUGridPMA-RPM-4"
 
 - name: igtf | Ensure EGI Policy Core and WLCG CA package is present
   ansible.builtin.package:
