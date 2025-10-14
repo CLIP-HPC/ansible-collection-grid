@@ -73,4 +73,3 @@
     name: condor-ce
     state: started
     enabled: true
-  register: service_condor_ce
