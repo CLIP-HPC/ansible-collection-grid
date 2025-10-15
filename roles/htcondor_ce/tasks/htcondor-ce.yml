@@ -39,7 +39,7 @@
     src: "{{ htcondor_ce_job_route_file }}"
     dest: /etc/condor-ce/config.d/
     mode: "0644"
-  when: htcondor_ce_job_route_file | default('') | length > 0
+  when: htcondor_ce_job_route_file is defined and htcondor_ce_job_route_file | default('') | length > 0
   notify: Reconfigure htcondor_ce
 
 - name: htcondor-ce | Disable WN proxy renewal
@@ -66,7 +66,7 @@
     owner: condor
     mode: "0755"
     path: "{{ htcondor_ce_spool_dir }}"
-  when: htcondor_ce_spool_dir is defined and htcondor_ce_spool_dir
+  when: htcondor_ce_spool_dir is defined and htcondor_ce_spool_dir | default('') | length > 0
 
 - name: htcondor-ce | Start HTCondor CE
   ansible.builtin.service:
