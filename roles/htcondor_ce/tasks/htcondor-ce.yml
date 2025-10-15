@@ -39,7 +39,7 @@
     src: "{{ htcondor_ce_job_route_file }}"
     dest: /etc/condor-ce/config.d/
     mode: "0644"
-  when: htcondor_ce_job_route_file and htcondor_ce_job_route_file | length > 0
+  when: htcondor_ce_job_route_file is defined and htcondor_ce_job_route_file | length > 0
   notify: Reconfigure htcondor_ce
 
 - name: htcondor-ce | Disable WN proxy renewal
