@@ -18,3 +18,28 @@
     name: "wlcg-iam-lsc-{{ item }}"
   loop: "{{ grid_vos }}"
   when: item in ['alice', 'atlas','dteam', 'cms', 'lhcb', 'ops']
+
+- name: voms | Ensure vomsdir exists
+  ansible.builtin.file:
+    path: /etc/grid-security/vomsdir/belle
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: voms | Write non-packaged LSC files
+  ansible.builtin.copy:
+    dest: '/etc/grid-security/vomsdir/belle/{{ item.filename }}'
+    content: '{{ item.content }}'
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - filename: belle-auth.cc.kek.jp.lsc
+      content: |
+        /C=JP/O=KEK/OU=CRC/CN=belle-auth.cc.kek.jp
+        /C=JP/O=KEK/OU=CRC/CN=KEK GRID Certificate Authority2024
+    - filename: voms.cc.kek.jp.lsc
+      content: |
+        /C=JP/O=KEK/OU=CRC/CN=host/voms.cc.kek.jp
+        /C=JP/O=KEK/OU=CRC/CN=KEK GRID Certificate Authority
