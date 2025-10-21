@@ -25,5 +25,5 @@
 
 - name: Configure as UI/WN node
   ansible.builtin.import_tasks: node.yml
-  when: grid_node_type
+  when: grid_node_type | default(false) | bool
   tags: ["grid", "node"]

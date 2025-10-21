@@ -11,5 +11,6 @@ htcondor_ce_apel_db_username: apel
 htcondor_ce_apel_db_password:
 htcondor_ce_apel_site_name:
 htcondor_ce_apel_spec_value: 1.0
+htcondor_ce_apel_spec_type: HEPSPEC
 htcondor_ce_mapfiles: []
 htcondor_ce_job_route_file:
