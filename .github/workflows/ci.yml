@@ -8,13 +8,6 @@ on:
   #   - cron: '0 6 * * *'
   workflow_dispatch:
 
-concurrency:
-  group: >-
-    ${{ github.workflow }}-${{
-      github.event.pull_request.number || github.sha
-    }}
-  cancel-in-progress: true
-
 jobs:
  ci:
     uses: vbc-it/github-action-workflows/.github/workflows/ansible-collection.yml@main
