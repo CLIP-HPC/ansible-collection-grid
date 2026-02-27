@@ -13,4 +13,3 @@ jobs:
     uses: vbc-it/github-action-workflows/.github/workflows/ansible-collection.yml@main
     with:
       platform: self-hosted
-      
