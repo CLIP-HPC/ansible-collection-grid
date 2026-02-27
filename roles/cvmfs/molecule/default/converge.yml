@@ -4,7 +4,7 @@
   tasks:
     - name: "Include cvmfs role"
       ansible.builtin.include_role:
-        name: cvmfs
+        name: clip.grid.cvmfs
       vars:
         cvmfs_manage_yumrepo: true
         cvmfs_quota_limit: 4000

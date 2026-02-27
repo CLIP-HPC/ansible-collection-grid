@@ -2,17 +2,14 @@
 dependency:
   name: galaxy
 driver:
-  name: docker
-lint: |
-  set -e
-  yamllint .
-  ansible-lint
-  flake8
+  name: podman
 platforms:
   - name: molecule-rocky9-eosxd
-    image: rockylinux:9.3
+    image: quay.io/rockylinux/rockylinux:9-ubi-init
     pre_build_image: true
 provisioner:
   name: ansible
 scenario:
   name: default
+verifier:
+  name: ansible
