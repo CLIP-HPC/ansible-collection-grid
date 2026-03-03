@@ -2,25 +2,23 @@
 dependency:
   name: galaxy
 driver:
-  name: docker
-lint: |
-  set -e
-  yamllint .
-  ansible-lint
-  flake8
+  name: podman
 platforms:
   - name: molecule-rocky9-htcondorce
     hostname: ce-9.grid.vbc.ac.at
-    image: rockylinux-systemd:9.3
+    image: quay.io/rockylinux/rockylinux:9-ubi-init
+    pre_build_image: true
     privileged: true # required for DBUS
     command: /usr/sbin/init
     cgroupns_mode: host
     capabilities:
       - SYS_ADMIN
     tmpfs:
-      - /tmp
-      - /run
+      /run: rw
+      /tmp: rw
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
 provisioner:
+  name: ansible
+verifier:
   name: ansible
