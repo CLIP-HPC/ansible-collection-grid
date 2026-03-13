@@ -1,0 +1,9 @@
+[project]
+name = "ansible-collection-grid"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "ansible-core>=2.19.7",
+    "molecule>=26.3.0",
+    "molecule-plugins[podman]>=25.8.12",
+]
