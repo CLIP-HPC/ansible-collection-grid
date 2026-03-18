@@ -7,10 +7,9 @@
         name: clip.grid.cvmfs
       vars:
         cvmfs_manage_yumrepo: true
-        cvmfs_quota_limit: 10000
+        cvmfs_quota_limit: 4000
         cvmfs_auto_setup: false
         cvmfs_repositories:
-          - name: config-egi.egi.eu
           - name: cms.cern.ch
             env_vars:
               CMS_LOCAL_SITE: /cvmfs/cms.cern.ch/SITECONF/T2_AT_Vienna
