@@ -9,3 +9,4 @@
       vars:
         htcondor_ce_lrms: slurm
         htcondor_ce_apel_site_name: MySite
+        htcondor_ce_repo_install: true

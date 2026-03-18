@@ -14,14 +14,12 @@ dependencies = [
     { name = "ansible-core", version = "2.19.7", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "ansible-core", version = "2.20.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "molecule" },
-    { name = "molecule-plugins" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "ansible-core", specifier = ">=2.19.7" },
     { name = "molecule", specifier = ">=26.3.0" },
-    { name = "molecule-plugins", extras = ["podman"], specifier = ">=25.8.12" },
 ]
 
 [[package]]
@@ -414,18 +412,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ec/a4/29f1738fa03ad997b07e8d48bdbcef0a35ee5aecee780d817711519b1f0b/molecule-26.3.0.tar.gz", hash = "sha256:e48c92383be5e580545dcc7d115b3f3559d6d5f28e1ab151a35dc780b7400a66", size = 4695554, upload-time = "2026-03-05T13:47:14.415Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bd/4d/043342018217e5e727b6592a81541c96d841bd41aea6123b0ca021376d7d/molecule-26.3.0-py3-none-any.whl", hash = "sha256:6cdddc2dc68f9505abd1eee676edc62b74810e7efef4e49f47772437e98070d2", size = 158985, upload-time = "2026-03-05T13:47:12.143Z" },
-]
-
-[[package]]
-name = "molecule-plugins"
-version = "25.8.12"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "molecule" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/65/11/b7316c96c9ecca901f3a7fd5927f3dd757e17e11a428fb83cc5349e9b063/molecule_plugins-25.8.12.tar.gz", hash = "sha256:75f32763e90275bfc24bcc0d27b9bb22ac973658bf902b2e3e8af8e2a1c32083", size = 106414, upload-time = "2025-08-12T19:57:36.628Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a2/ee/efdf33ffb32861d9b357a4e7cff018206729703440c028b92ed64fe834b1/molecule_plugins-25.8.12-py3-none-any.whl", hash = "sha256:c5b8ceb209a5ff87326631d60408f8d08b9431b2e339dad4c620130b50279ce0", size = 76357, upload-time = "2025-08-12T19:57:35.285Z" },
 ]
 
 [[package]]
