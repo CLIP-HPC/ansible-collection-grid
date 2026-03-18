@@ -7,7 +7,7 @@
         name: clip.grid.cvmfs
       vars:
         cvmfs_manage_yumrepo: true
-        cvmfs_quota_limit: 4000
+        cvmfs_quota_limit: 10000
         cvmfs_auto_setup: false
         cvmfs_repositories:
           - name: config-egi.egi.eu
