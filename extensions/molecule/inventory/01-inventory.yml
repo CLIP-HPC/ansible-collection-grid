@@ -4,6 +4,7 @@ all:
     container_rockylinux9:
       container_image: quay.io/rockylinux/rockylinux:9-ubi-init
       container_privileged: true
-    # container_rockylinux10:
-    #   container_image: quay.io/rockylinux/rockylinux:10-ubi-init
-    #   container_privileged: true
+    container_rockylinux10:
+      container_image: quay.io/rockylinux/rockylinux:10-ubi-init
+      container_privileged: true
+      grid_install_umd_repo: false # UMD5 repos are not available yet for Rocky Linux 10

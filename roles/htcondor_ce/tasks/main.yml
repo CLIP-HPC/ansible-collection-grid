@@ -9,5 +9,6 @@
   tags: ['htcondor-ce', 'install']
 
 - name: Install APEL
-  ansible.builtin.import_tasks: apel.yml
+  ansible.builtin.include_tasks: apel.yml
   tags: ['htcondor-ce', 'apel']
+  when: ansible_facts['distribution_major_version'] != '10' # FIXME: skip because of missing dependencies for RHEL10
