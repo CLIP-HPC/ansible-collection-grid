@@ -3,7 +3,6 @@
   ansible.builtin.package:
     name:
       - 'htcondor-ce-client'
-      - "htcondor-ce-view"
       - "htcondor-ce"
       - "htcondor-ce-{{ htcondor_ce_lrms }}"
     state: installed

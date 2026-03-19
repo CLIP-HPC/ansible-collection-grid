@@ -3,7 +3,6 @@
 - name: Install and Configure CVMFS repository
   ansible.builtin.import_tasks: repo.yml
   tags: [cvmfs, repos]
-  when: cvmfs_manage_yumrepo
 
 - name: Install CVMFS client and configuration packages
   ansible.builtin.import_tasks: packages.yml

@@ -1,13 +1,8 @@
 ---
-- name: repo | Install CernVM GPG key
-  ansible.builtin.rpm_key:
-    key: https://cvmrepo.web.cern.ch/cvmrepo/yum/RPM-GPG-KEY-CernVM
-    state: present
-    validate_certs: true
-    fingerprint: "70B9 8904 8820 8E31 5ED4  5208 230D 389D 8AE4 5CE7"
-
 - name: repo | Install CVMFS repository
+  vars:
+    cvmfs_repo_pkg: "{{ cvmfs_manage_yumrepo | ternary('https://cvmrepo.web.cern.ch/cvmrepo/yum/cvmfs-release-latest.noarch.rpm', 'cvmfs-release-*') }}"
   ansible.builtin.dnf:
-    name: https://cvmrepo.web.cern.ch/cvmrepo/yum/cvmfs-release-latest.noarch.rpm
-    state: installed
+    name: "{{ cvmfs_repo_pkg }}"
+    state: "{{ cvmfs_manage_yumrepo | ternary('installed', 'absent') }}"
     disable_gpg_check: true

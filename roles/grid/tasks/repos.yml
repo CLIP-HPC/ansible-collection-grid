@@ -13,11 +13,27 @@
     - name: repos | Import WLCG gpgpkey
       ansible.builtin.rpm_key:
         state: present
-        key: "http://linuxsoft.cern.ch/wlcg/RPM-GPG-KEY-wlcg"
+        key: >-
+          {{
+            (ansible_facts['distribution_major_version'] == '10')
+            | ternary(
+              'http://linuxsoft.cern.ch/wlcg/RPM-GPG-KEY-wlcg-EL10',
+              'http://linuxsoft.cern.ch/wlcg/RPM-GPG-KEY-wlcg'
+            )
+          }}
 
     - name: repos | Install WLCG release repository
+      vars:
+        repo_pkg: >-
+          {{
+            (ansible_facts['distribution_major_version'] == '10')
+            | ternary(
+              'wlcg-repo-2.0.0-1.el10.noarch.rpm',
+              'wlcg-repo-1.0.0-1.el9.noarch.rpm'
+            )
+          }}
       ansible.builtin.package:
-        name: "http://linuxsoft.cern.ch/wlcg/el9/x86_64/wlcg-repo-1.0.0-1.el9.noarch.rpm"
+        name: "http://linuxsoft.cern.ch/wlcg/el{{ ansible_facts['distribution_major_version'] }}/x86_64/{{ repo_pkg }}"
         state: present
 
 

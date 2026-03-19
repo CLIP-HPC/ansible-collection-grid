@@ -1,0 +1,13 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: Ensure gnupg2 is installed
+      ansible.builtin.package:
+        name: gnupg2
+        state: present
+
+    - name: Install EPEL release
+      ansible.builtin.package:
+        name: epel-release
+        state: present

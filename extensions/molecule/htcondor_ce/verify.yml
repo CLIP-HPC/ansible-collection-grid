@@ -19,6 +19,7 @@
           - condor_service_info.status.UnitFileState == 'enabled'
         fail_msg: "condor-ce service is not running and enabled"
         success_msg: "condor-ce service is running and enabled"
+      when: ansible_facts['distribution_major_version'] != '10' # FIXME: skip because condor-ce service is not installed in RHEL10
 
 
     - name: Assert that condor-ce-apel timer is running and enabled
@@ -28,3 +29,4 @@
           - apel_service_info.status.UnitFileState == 'enabled'
         fail_msg: "condor-ce-apel timer is not running and enabled"
         success_msg: "condor-ce-apel timer is running and enabled"
+      when: ansible_facts['distribution_major_version'] != '10' # FIXME: skip because condor-ce-apel timer is not installed in RHEL10

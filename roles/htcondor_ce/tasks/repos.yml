@@ -1,10 +1,26 @@
 ---
 - name: repos | Imort HTCondor GPG key
   ansible.builtin.rpm_key:
-    key: "https://research.cs.wisc.edu/htcondor/repo/keys/HTCondor-23.x-Key"
-    state: present
+    key: "https://research.cs.wisc.edu/htcondor/repo/keys/HTCondor-{{ htcondor_ce_release }}-Key"
+    state: "{{ htcondor_ce_repo_install | ternary('present', 'absent') }}"
 
 - name: repos | Install HTCondor stable repository
+  vars:
+    htcondor_repo_pkg: >-
+      {{
+        htcondor_ce_repo_install
+        | ternary(
+          'https://research.cs.wisc.edu/htcondor/repo/'
+          ~ htcondor_ce_release
+          ~ '/htcondor-release-current.el'
+          ~ ansible_facts['distribution_major_version']
+          ~ '.noarch.rpm',
+          'htcondor-release-'
+          ~ htcondor_ce_release
+          ~ '-1.el'
+          ~ ansible_facts['distribution_major_version']
+        )
+      }}
   ansible.builtin.package:
-    name: "https://research.cs.wisc.edu/htcondor/repo/23.x/htcondor-release-current.el9.noarch.rpm"
-    state: installed
+    name: "{{ htcondor_repo_pkg }}"
+    state: "{{ htcondor_ce_repo_install | ternary('installed', 'absent') }}"

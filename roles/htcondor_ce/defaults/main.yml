@@ -14,3 +14,4 @@ htcondor_ce_apel_spec_value: 1.0
 htcondor_ce_apel_spec_type: HEPSPEC
 htcondor_ce_mapfiles: []
 htcondor_ce_job_route_file:
+htcondor_ce_release: 25.x
