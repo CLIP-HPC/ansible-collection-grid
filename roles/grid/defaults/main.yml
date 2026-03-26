@@ -13,3 +13,7 @@ grid_node_type:
 
 # Installs HEP_OS package. Only relevant when grid_node_type is set to UI or WN
 grid_install_hepos: true
+
+# Weather to set X509_VOMSES and X509_VOMS_DIR environment variables to point to the correct locations.
+# otherwiose install the RPMs
+grid_use_cvmfs_for_voms_certs: false

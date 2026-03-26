@@ -11,4 +11,5 @@
           - cms
           - alice
           - ops
-        grid_node_type: ui
+          - belle
+        grid_node_type: wn

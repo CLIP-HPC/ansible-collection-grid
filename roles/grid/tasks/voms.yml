@@ -1,45 +1,73 @@
 ---
-- name: voms | Install VOMS (except belle) files
-  ansible.builtin.package:
-    state: installed
-    name: "wlcg-iam-vomses-{{ item }}"
-  loop: "{{ grid_vos }}"
-  when: item in ['alice', 'atlas', 'cms', 'dteam', 'lhcb', 'ops']
+- name: voms | Install VOMS CA files
+  when: not (grid_use_cvmfs_for_voms_certs | bool)
+  block:
+    - name: voms | Install VOMS (except belle) files
+      ansible.builtin.package:
+        state: installed
+        name: "wlcg-iam-vomses-{{ item }}"
+      loop: "{{ grid_vos }}"
+      when: item in ['alice', 'atlas', 'cms', 'dteam', 'lhcb', 'ops']
 
-- name: voms | Install VOMS ALL (belle)
-  ansible.builtin.package:
-    state: installed
-    name: "desy-voms-all"
-  when: "'belle' in grid_vos"
+    - name: voms | Set belle package name based on distribution
+      ansible.builtin.set_fact:
+        grid_belle_package_name: >-
+          {{
+            (ansible_facts['distribution_major_version'] | int == 10)
+            | ternary(
+              'https://gitlab.desy.de/grid/voms-cert-transition/-/raw/main/files/rpm/desy-voms-all-1.0.0-1.noarch.rpm?inline=false',
+              'desy-voms-all'
+            )
+          }}
 
-- name: voms | Install VOMS LSC files
-  ansible.builtin.package:
-    state: installed
-    name: "wlcg-iam-lsc-{{ item }}"
-  loop: "{{ grid_vos }}"
-  when: item in ['alice', 'atlas','dteam', 'cms', 'lhcb', 'ops']
+    - name: voms | Install VOMS (belle)
+      ansible.builtin.dnf:
+        state: installed
+        name: "{{ grid_belle_package_name }}"
+        disable_gpg_check: "{{ ansible_facts['distribution_major_version'] | int == 10 }}"
+      when: "'belle' in grid_vos"
 
-- name: voms | Ensure vomsdir exists
-  ansible.builtin.file:
-    path: /etc/grid-security/vomsdir/belle
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
+    - name: voms | Install VOMS LSC files
+      ansible.builtin.package:
+        state: installed
+        name: "wlcg-iam-lsc-{{ item }}"
+      loop: "{{ grid_vos }}"
+      when: item in ['alice', 'atlas','dteam', 'cms', 'lhcb', 'ops']
 
-- name: voms | Write non-packaged LSC files
-  ansible.builtin.copy:
-    dest: '/etc/grid-security/vomsdir/belle/{{ item.filename }}'
-    content: '{{ item.content }}'
-    owner: root
-    group: root
-    mode: '0644'
-  loop:
-    - filename: belle-auth.cc.kek.jp.lsc
-      content: |
-        /C=JP/O=KEK/OU=CRC/CN=belle-auth.cc.kek.jp
-        /C=JP/O=KEK/OU=CRC/CN=KEK GRID Certificate Authority2024
-    - filename: voms.cc.kek.jp.lsc
-      content: |
-        /C=JP/O=KEK/OU=CRC/CN=voms.cc.kek.jp
-        /C=JP/O=KEK/OU=CRC/CN=KEK GRID Certificate Authority2024
+    - name: voms | Ensure vomsdir exists
+      ansible.builtin.file:
+        path: /etc/grid-security/vomsdir/belle
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: voms | Write non-packaged LSC files (Belle)
+      ansible.builtin.copy:
+        dest: '/etc/grid-security/vomsdir/belle/{{ item.filename }}'
+        content: '{{ item.content }}'
+        owner: root
+        group: root
+        mode: '0644'
+      loop:
+        - filename: belle-auth.cc.kek.jp.lsc
+          content: |
+            /C=JP/O=KEK/OU=CRC/CN=belle-auth.cc.kek.jp
+            /C=JP/O=KEK/OU=CRC/CN=KEK GRID Certificate Authority2024
+        - filename: voms.cc.kek.jp.lsc
+          content: |
+            /C=JP/O=KEK/OU=CRC/CN=voms.cc.kek.jp
+            /C=JP/O=KEK/OU=CRC/CN=KEK GRID Certificate Authority2024
+
+- name: voms | Configure X509_VOMSES and X509_VOMS_DIR environment variables
+  when: grid_use_cvmfs_for_voms_certs | bool
+  block:
+    - name: voms | Create profile.d file for VOMS environment variables
+      ansible.builtin.copy:
+        dest: /etc/profile.d/voms.sh
+        content: |
+          export X509_VOMSES=/cvmfs/grid.cern.ch/etc/grid-security/vomses
+          export X509_VOMS_DIR=/cvmfs/grid.cern.ch/etc/grid-security/vomsdir
+        owner: root
+        group: root
+        mode: '0644'

@@ -2,6 +2,10 @@
   hosts: all
 
   tasks:
+    - name: Retrieve package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
     - name: Check fetch-crl timer
       ansible.builtin.systemd:
         name: fetch-crl.timer
@@ -14,3 +18,10 @@
           - fetch_crl_timer_info.status.UnitFileState == "enabled"
         fail_msg: "Fetch-crl timer is not running or not enabled"
         success_msg: "Fetch-crl timer is running and enabled"
+
+    - name: Assert grid WN package is installed
+      ansible.builtin.assert:
+        that:
+          - "'wn' in ansible_facts.packages"
+        fail_msg: "Grid WN package is not installed"
+        success_msg: "Grid WN package is installed"

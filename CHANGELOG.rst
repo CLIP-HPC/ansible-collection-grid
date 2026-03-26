@@ -4,6 +4,13 @@ clip.grid Release Notes
 
 .. contents:: Topics
 
+v2.1.1
+======
+Release Summary
+---------------
+- Add support for CVMFS-based VOMS configuration
+- Bugfix: Fix RHEL10 issue in the grid role
+
 v2.1.0
 ======
 Release Summary
