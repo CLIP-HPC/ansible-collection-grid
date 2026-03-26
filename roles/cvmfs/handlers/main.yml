@@ -4,6 +4,7 @@
   ansible.builtin.service:
     name: autofs
     state: restarted
+    enabled: true
 
 - name: Reload cvmfs config
   ansible.builtin.command: cvmfs_config reload
