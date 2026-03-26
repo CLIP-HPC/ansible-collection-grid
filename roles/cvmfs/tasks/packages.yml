@@ -3,7 +3,8 @@
   ansible.builtin.package:
     name: "{{ ['cvmfs'] + cvmfs_config_repos }}"
 
-- name: packages | Install/Uninstall cvmfs-auto-setup package
+- name: packages | Install AutoFS package
   ansible.builtin.package:
-    name: "cvmfs-auto-setup"
-    state: "{{ (cvmfs_auto_setup | bool) | ternary('present', 'absent') }}"
+    name: autofs
+    state: present
+  when: cvmfs_auto_setup | bool

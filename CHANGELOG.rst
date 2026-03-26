@@ -4,6 +4,12 @@ clip.grid Release Notes
 
 .. contents:: Topics
 
+v2.2.0
+======
+Release Summary
+---------------
+- CVMFS (bugfix): Don't install cvmfs-auto-setup package. Configure autofs manually
+
 v2.1.1
 ======
 Release Summary
