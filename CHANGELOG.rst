@@ -4,6 +4,12 @@ clip.grid Release Notes
 
 .. contents:: Topics
 
+v2.2.1
+======
+Release Summary
+---------------
+- Grid (bugfix): Use RPM for Belle VOMS configuration
+
 v2.2.0
 ======
 Release Summary
