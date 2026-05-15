@@ -4,7 +4,7 @@ grid_install_wlcg_repo: true
 grid_install_umd_repo: true
 grid_enable_fetch_crl: true
 grid_enable_certificates: true
-grid_fetchcrl_options: []
+grid_fetchcrl_options: {}
 grid_vos: []
 grid_host_certificate: {}
 

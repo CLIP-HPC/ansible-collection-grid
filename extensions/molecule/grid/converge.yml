@@ -13,3 +13,5 @@
           - ops
           - belle
         grid_node_type: wn
+        grid_fetchcrl_options:
+          rcmode: noretrievalerrors

@@ -6,6 +6,18 @@
     name: fetch-crl
     state: present
 
+- name: fetch-crl | Create configuration file
+  ansible.builtin.copy:
+    content: |
+      # Ansible managed file - do not edit manually
+      {% for key, value in grid_fetchcrl_options.items() %}
+      {{ key }} = {{ value }}
+      {% endfor %}
+    dest: /etc/fetch-crl.d/10-site.conf
+    owner: root
+    group: root
+    mode: '0644'
+
 - name: fetch-crl | Enable fetch-crl timer
   ansible.builtin.systemd:
     name: fetch-crl.timer
