@@ -4,6 +4,12 @@ clip.grid Release Notes
 
 .. contents:: Topics
 
+v2.2.2
+======
+Release Summary
+---------------
+- Add support for configuring fetch-crl options via ansible variables
+
 v2.2.1
 ======
 Release Summary
