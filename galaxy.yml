@@ -1,7 +1,7 @@
 ---
 namespace: clip
 name: grid
-version: 2.2.2
+version: 2.2.3
 readme: README.md
 authors:
   - Erich Birngrbuer <erich.birngruber@gmi.oeaw.ac.at>
@@ -17,4 +17,21 @@ dependencies:
 repository: https://github.com/CLIP-HPC/ansible-collection-grid
 homepage: https://www.clip.science/
 issues: https://github.com/CLIP-HPC/ansible-collection-grid/issues
-build_ignore: []
+build_ignore:
+  - .git
+  - .github
+  - .gitignore
+  - .vscode
+  - .idea
+  - .venv
+  - venv
+  - .tox
+  - .pytest_cache
+  - __pycache__
+  - "*.pyc"
+  - dist
+  - build
+  - "*.tar.gz"
+  - tmp
+  - logs
+  - "*.log"
