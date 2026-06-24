@@ -10,6 +10,10 @@ on:
 
 jobs:
   ci:
-    uses: vbc-it/github-action-workflows/.github/workflows/ansible-collection.yml@main
+    uses: vbc-it/github-action-workflows/.github/workflows/ansible-collection.yml@push_to_aap
+    secrets:
+      automationhub_token: ${{ secrets.AAP_HUB_API_TOKEN }}
     with:
       platform: self-hosted
+      publish_to_automationhub: true
+      automationhub_url: https://tower.vbc.ac.at
