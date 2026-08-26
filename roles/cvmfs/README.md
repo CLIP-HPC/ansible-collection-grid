@@ -63,6 +63,11 @@ Other global settings can be passed by a hash
 
 Repositories and their settings are provided as a hash
 
+    cvmfs_skip_chksetup: false
+    cvmfs_skip_probe: false
+
+Skip the `cvmfs_config chksetup` and/or `cvmfs_config probe` checks run at the end of the role
+
 ## Example Playbook
 
     - hosts: servers

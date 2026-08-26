@@ -18,3 +18,7 @@ cvmfs_default_mount_opts: "defaults,_netdev,x-systemd.mount-timeout=6min"
 
 # Set to true (only as a one-time option with -e) to switch from static mode to autofs. Will unmount all repos!
 cvmfs_force_unmount: false
+
+# Skip the individual test.yml checks
+cvmfs_skip_chksetup: false
+cvmfs_skip_probe: false
