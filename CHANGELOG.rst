@@ -4,6 +4,12 @@ clip.grid Release Notes
 
 .. contents:: Topics
 
+v2.2.4
+======
+Release Summary
+---------------
+- CVMFS: Add cvmfs_skip_chksetup and cvmfs_skip_probe variables to skip the cvmfs_config chksetup/probe checks
+
 v2.2.2
 ======
 Release Summary
