@@ -4,8 +4,9 @@ name: grid
 version: 2.2.5
 readme: README.md
 authors:
-  - Erich Birngrbuer <erich.birngruber@gmi.oeaw.ac.at>
+  - Erich Birngruber <erich.birngruber@gmi.oeaw.ac.at>
   - Uemit Seren <uemit.seren@gmi.oeaw.ac.at>
+  - Leon Schwarzaeugl <leon.schwarzaeugl@imba.oeaw.ac.at>
 description: VBC grid services deployment
 license:
   - GPL-2.0-or-later
