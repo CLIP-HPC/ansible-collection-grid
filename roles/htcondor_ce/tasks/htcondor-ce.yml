@@ -19,6 +19,8 @@
       dest: config.d/01-ce-auth.conf
     - src: files/90-ssl-auth.conf
       dest: config.d/90-ssl-auth.conf
+    - src: files/98-scitokens.conf
+      dest: config.d/98-scitokens.conf
     - src: files/99-voms.conf
       dest: config.d/99-voms.conf
     - src: files/99-debug.conf
