@@ -42,3 +42,13 @@
         owner: root
         group: root
         mode: '0644'
+
+    # voms-clients-java (pulled in by the WLCG wn/ui metapackages) ignores X509_VOMSES
+    # and only reads /etc/vomses, ~/.glite/vomses and ~/.voms/vomses.
+    # force replaces the empty /etc/vomses directory that the VOMS clients create.
+    - name: voms | Link /etc/vomses to CVMFS
+      ansible.builtin.file:
+        src: /cvmfs/grid.cern.ch/etc/grid-security/vomses
+        dest: /etc/vomses
+        state: link
+        force: true
