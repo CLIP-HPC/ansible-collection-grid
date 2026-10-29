@@ -60,6 +60,13 @@ Details for the parameters see [Nikhef Wiki](https://wiki.nikhef.nl/grid/FetchCR
 A list of Virtual Organisations (VOs) to be configured. The detail of the configuration is
 taken from the [EGI Operation Portal](https://operations-portal.egi.eu/)
 
+    grid_use_cvmfs_for_voms_certs: false
+
+Use the VOMS configuration from the CVMFS repository grid.cern.ch instead of installing
+the `wlcg-iam-vomses-*` and `wlcg-iam-lsc-*` RPMs. Sets `X509_VOMSES` and `X509_VOMS_DIR`
+in `/etc/profile.d/voms.sh` and links `/etc/vomses` to the CVMFS copy, because
+`voms-clients-java` ignores `X509_VOMSES`. Requires grid.cern.ch to be mounted.
+
     grid_host_certificate: {}
 
 Install host certificate. The certificates is provided as hash
