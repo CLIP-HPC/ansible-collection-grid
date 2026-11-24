@@ -1,8 +1,11 @@
 ---
-- name: repos | Imort HTCondor GPG key
+# The key is only imported, never removed: removing it by URL would require
+# downloading it, which is not possible when the repository comes from Satellite.
+- name: repos | Import HTCondor GPG key
+  when: htcondor_ce_repo_install | bool
   ansible.builtin.rpm_key:
     key: "https://research.cs.wisc.edu/htcondor/repo/keys/HTCondor-{{ htcondor_ce_release }}-Key"
-    state: "{{ htcondor_ce_repo_install | ternary('present', 'absent') }}"
+    state: present
 
 - name: repos | Install HTCondor stable repository
   vars:

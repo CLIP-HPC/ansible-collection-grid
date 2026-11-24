@@ -69,3 +69,18 @@
       ansible.builtin.package:
         name: "https://repository.egi.eu/sw/production/umd/5/al9/release/x86_64/umd-release-5.0.0-1.al9.alma.noarch.rpm"
         state: present
+
+
+# Remove the upstream release packages when the repositories are provided
+# elsewhere (e.g. Satellite). Imported GPG keys are left in place.
+- name: repos | Remove WLCG release repository
+  when: not grid_install_wlcg_repo | bool
+  ansible.builtin.package:
+    name: wlcg-repo
+    state: absent
+
+- name: repos | Remove UMD release repository
+  when: not grid_install_umd_repo | bool
+  ansible.builtin.package:
+    name: umd-release
+    state: absent

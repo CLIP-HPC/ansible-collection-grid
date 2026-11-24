@@ -14,6 +14,9 @@ Release Summary
 - Grid (bugfix): Import the OpenPGP v6 WLCG EL10 GPG key with rpmkeys, as rpm_key cannot parse it
 - Grid (bugfix): Link /etc/vomses to CVMFS when grid_use_cvmfs_for_voms_certs is enabled
 - CVMFS (bugfix): Quote the CVMFS_SERVER_URL server list in the domain configuration
+- Grid: Remove the wlcg-repo/umd-release packages when grid_install_wlcg_repo/grid_install_umd_repo is false (e.g. repositories provided by Satellite)
+- HTCondor-CE (bugfix): Don't download the HTCondor GPG key when htcondor_ce_repo_install is false
+- Docs: Fix the repository variable names in the grid and eosxd READMEs
 
 v2.2.4
 ======

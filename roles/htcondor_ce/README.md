@@ -16,7 +16,8 @@ There is also the [OSG documentation](https://bbockelm.github.io/docs/compute-el
 
     htcondor_ce_repo_install: true
 
-Install HTCondor repository
+Install the HTCondor repository release package and GPG key. Set to `false` when the repository is
+provided elsewhere (e.g. Satellite); the release package is then removed (the GPG key is left in place).
 
     htcondor_ce_spool_dir_mode: "0755"
 
