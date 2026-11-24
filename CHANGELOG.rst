@@ -4,6 +4,12 @@ clip.grid Release Notes
 
 .. contents:: Topics
 
+v2.2.5
+======
+Release Summary
+---------------
+- HTCondor-CE (bugfix): Report the VO of token-submitted jobs to APEL. condor_ce_blah.sh falls back to the token subject and maps "issuer,subject" to the accounting group with htcondor_ce_apel_acct_group_map
+
 v2.2.4
 ======
 Release Summary

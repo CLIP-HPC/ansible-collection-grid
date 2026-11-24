@@ -18,6 +18,14 @@ There is also the [OSG documentation](https://bbockelm.github.io/docs/compute-el
 
 Install HTCondor repository
 
+    htcondor_ce_apel_acct_group_map:
+      - '* /^https\:\/\/cms\-auth\.cern\.ch\// /cms/Role=pilot/Capability=NULL'
+
+Lines of `/etc/condor/apel_acct_group.map`. Jobs submitted with a token have no VOMS FQAN, so
+`condor_ce_blah.sh` maps "token issuer,token subject" with this map to the APEL accounting group.
+Without a matching line the job has no VO in APEL. See the HTCondor-CE
+[APEL scripts](https://github.com/htcondor/htcondor-ce/tree/main/contrib/apelscripts).
+
 
 
 ## Dependencies

@@ -41,10 +41,16 @@ safe_config_val CE_ID APEL_CE_ID
 # Need to replace the GridJobId which is in format "batch slurm ce-1.grid.vbc.ac.at_9619_ce-1.grid.vbc.ac.at_780192.0_1631527967 slurm/20210913/26830538" to match the output from the batch logs using sacct
 SED_FILTER="s/batch slurm .+slurm\/[[:digit:]]+\/([[:digit:]]+)/\1.batch/"
 
+# Jobs submitted with a token have no proxy attributes. Use the token subject as the user and map
+# "issuer,subject" to the accounting group (FQAN) with the ApelAGMap user map (/etc/condor/apel_acct_group.map),
+# as in the upstream contrib/apelscripts/condor_batch_blah.py
+USER_EXPR='ifThenElse(!isUndefined(x509userproxysubject), x509userproxysubject, orig_AuthTokenSubject)'
+GROUP_EXPR='ifThenElse(!isUndefined(x509UserProxyFirstFQAN), x509UserProxyFirstFQAN, ((orig_AuthTokenIssuer isnt UNDEFINED && orig_AuthTokenSubject isnt UNDEFINED) ? userMap("ApelAGMap", strcat(orig_AuthTokenIssuer, ",", orig_AuthTokenSubject)) : UNDEFINED))'
+
 TZ=GMT condor_ce_history -const "$CONSTR" \
  -format "\"timestamp=%s\" " 'formatTime(EnteredCurrentStatus, "%Y-%m-%d %H:%M:%S")' \
- -format "\"userDN=%s\" " x509userproxysubject \
- -format "\"userFQAN=%s\" " x509UserProxyFirstFQAN \
+ -format "\"userDN=%s\" " "$USER_EXPR" \
+ -format "\"userFQAN=%s\" " "$GROUP_EXPR" \
  -format "\"ceID=${CE_ID}\" " EMPTY \
  -format "\"jobID=%v_${CE_HOST}\" " RoutedFromJobId \
  -format "\"lrmsID=%v\" " GridJobId \
