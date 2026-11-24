@@ -10,6 +10,10 @@ Release Summary
 ---------------
 - HTCondor-CE (bugfix): Report the VO of token-submitted jobs to APEL. condor_ce_blah.sh falls back to the token subject and maps "issuer,subject" to the accounting group with htcondor_ce_apel_acct_group_map
 - HTCondor-CE: Add htcondor_ce_spool_dir_mode to set the mode of the spool directory (default 0755)
+- HTCondor-CE: Add the collector host (condor://) to the SciTokens server audience
+- Grid (bugfix): Import the OpenPGP v6 WLCG EL10 GPG key with rpmkeys, as rpm_key cannot parse it
+- Grid (bugfix): Link /etc/vomses to CVMFS when grid_use_cvmfs_for_voms_certs is enabled
+- CVMFS (bugfix): Quote the CVMFS_SERVER_URL server list in the domain configuration
 
 v2.2.4
 ======
