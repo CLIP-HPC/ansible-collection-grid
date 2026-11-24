@@ -18,6 +18,11 @@ There is also the [OSG documentation](https://bbockelm.github.io/docs/compute-el
 
 Install HTCondor repository
 
+    htcondor_ce_spool_dir_mode: "0755"
+
+Mode of the spool directory `htcondor_ce_spool_dir` (owned by `condor`). Set it to the mode the storage
+sets if the spool is a shared volume, so the role and the storage don't change it back and forth.
+
     htcondor_ce_apel_acct_group_map:
       - '* /^https\:\/\/cms\-auth\.cern\.ch\// /cms/Role=pilot/Capability=NULL'
 

@@ -9,6 +9,7 @@ v2.2.5
 Release Summary
 ---------------
 - HTCondor-CE (bugfix): Report the VO of token-submitted jobs to APEL. condor_ce_blah.sh falls back to the token subject and maps "issuer,subject" to the accounting group with htcondor_ce_apel_acct_group_map
+- HTCondor-CE: Add htcondor_ce_spool_dir_mode to set the mode of the spool directory (default 0755)
 
 v2.2.4
 ======

@@ -2,6 +2,8 @@
 # defaults file for htcondor-ce role
 htcondor_ce_repo_install: true
 htcondor_ce_spool_dir:
+# mode of htcondor_ce_spool_dir, e.g. "0775" if the spool is an NFS volume whose root mode is set by the storage
+htcondor_ce_spool_dir_mode: "0755"
 htcondor_ce_home_dir: /users
 htcondor_ce_job_routes: []
 htcondor_ce_shared_dir: ["{{ htcondor_ce_spool_dir }}", "{{ htcondor_ce_home_dir }}"]
