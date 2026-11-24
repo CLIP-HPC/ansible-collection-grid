@@ -16,8 +16,9 @@
         state: present
         key: http://linuxsoft.cern.ch/wlcg/RPM-GPG-KEY-wlcg
 
-    # The EL10 key is an OpenPGP v6 key, which the gpg used by rpm_key cannot
-    # parse. rpm on EL10 (Sequoia) can, so import it with rpmkeys instead.
+    # EL10.3+ ships an OpenPGP v6 release key. rpm_key pipes every key in the
+    # rpm database through gpg, which cannot parse v6 keys, so it fails for any
+    # key. Import with rpmkeys (Sequoia) instead.
     - name: repos | Import WLCG gpgpkey (EL10)
       when: ansible_facts['distribution_major_version'] == '10'
       block:

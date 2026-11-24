@@ -2,10 +2,38 @@
 # The key is only imported, never removed: removing it by URL would require
 # downloading it, which is not possible when the repository comes from Satellite.
 - name: repos | Import HTCondor GPG key
-  when: htcondor_ce_repo_install | bool
+  when:
+    - htcondor_ce_repo_install | bool
+    - ansible_facts['distribution_major_version'] != '10'
   ansible.builtin.rpm_key:
     key: "https://research.cs.wisc.edu/htcondor/repo/keys/HTCondor-{{ htcondor_ce_release }}-Key"
     state: present
+
+# EL10.3+ ships an OpenPGP v6 release key. rpm_key pipes every key in the rpm
+# database through gpg, which cannot parse v6 keys, so it fails for any key.
+# Import with rpmkeys (Sequoia) instead.
+- name: repos | Import HTCondor GPG key (EL10)
+  when:
+    - htcondor_ce_repo_install | bool
+    - ansible_facts['distribution_major_version'] == '10'
+  block:
+    - name: repos | Download HTCondor GPG key
+      ansible.builtin.get_url:
+        url: "https://research.cs.wisc.edu/htcondor/repo/keys/HTCondor-{{ htcondor_ce_release }}-Key"
+        dest: "/etc/pki/rpm-gpg/HTCondor-{{ htcondor_ce_release }}-Key"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: repos | Import HTCondor GPG key with rpmkeys
+      ansible.builtin.shell: |
+        set -o pipefail
+        before=$(rpm -q gpg-pubkey | sort)
+        rpmkeys --import "/etc/pki/rpm-gpg/HTCondor-{{ htcondor_ce_release }}-Key" || exit 1
+        after=$(rpm -q gpg-pubkey | sort)
+        [ "$before" = "$after" ] || echo imported
+      register: htcondor_ce_el10_key_import
+      changed_when: "'imported' in htcondor_ce_el10_key_import.stdout"
 
 - name: repos | Install HTCondor stable repository
   vars:
