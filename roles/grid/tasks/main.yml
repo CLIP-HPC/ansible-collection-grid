@@ -1,29 +1,8 @@
 ---
 # tasks file for grid role
 
-- name: Install IGTF Repository and packages
-  ansible.builtin.import_tasks: igtf.yml
-  tags: ["grid", "repos"]
+- name: Install grid repositories and packages
+  ansible.builtin.import_tasks: install.yml
 
-- name: Configure UMD and WLCG repositories
-  ansible.builtin.import_tasks: repos.yml
-  tags: ["grid", "repos"]
-
-- name: Install and configure fetch-crl
-  ansible.builtin.import_tasks: fetch-crl.yml
-  when: grid_enable_fetch_crl | bool
-  tags: ["grid", "fetch-crl"]
-
-- name: Install VOMS
-  ansible.builtin.import_tasks: voms.yml
-  tags: ["grid", "voms"]
-
-- name: Install host certificate
-  ansible.builtin.import_tasks: hostcert.yml
-  when: grid_host_certificate | length > 0
-  tags: ["grid", "certificate"]
-
-- name: Configure as UI/WN node
-  ansible.builtin.import_tasks: node.yml
-  when: (grid_node_type | default('')) in ['ui', 'wn']
-  tags: ["grid", "node"]
+- name: Configure grid services
+  ansible.builtin.import_tasks: configure.yml

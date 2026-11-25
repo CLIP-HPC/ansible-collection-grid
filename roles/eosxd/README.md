@@ -15,6 +15,20 @@ Role Variables
 
 `eosxd_mount_point`: the mount point for eos when using the systemd (`eosxd_fstab`) service (default: /eos)
 
+Task Entry Points
+-----------------
+
+`main.yml` runs `install.yml` and then `configure.yml`. To install packages in an image
+build and configure at first boot, run them separately with `tasks_from`:
+
+- `install.yml`: EOS repositories (`eosxd_use_upstream_repos`) and `eos-fusex`. Doesn't need `eosxd_mgmt_alias` and starts no services.
+- `configure.yml`: `/etc/eos/fuse.eos.conf`, keytab and the `/etc/fstab` entry. Requires `eosxd_mgmt_alias`.
+
+      - name: Install eos-fusex
+        ansible.builtin.include_role:
+          name: clip.grid.eosxd
+          tasks_from: install.yml
+
 Example Playbook
 ----------------
 

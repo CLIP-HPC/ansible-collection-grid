@@ -68,6 +68,21 @@ Repositories and their settings are provided as a hash
 
 Skip the `cvmfs_config chksetup` and/or `cvmfs_config probe` checks run at the end of the role
 
+## Task Entry Points
+
+`main.yml` runs `install.yml` and then `configure.yml`. To install packages in an image
+build and configure at first boot, run them separately with `tasks_from`:
+
+*   `install.yml`: CVMFS repository (`cvmfs_manage_yumrepo`), `cvmfs` and `cvmfs_config_repos`
+    packages, `autofs` (`cvmfs_auto_setup`). Starts no services.
+*   `configure.yml`: cache, `/etc/cvmfs` configuration, mounts or autofs, and the
+    `cvmfs_config chksetup`/`probe` checks.
+
+        - name: Install CVMFS packages
+          ansible.builtin.include_role:
+            name: clip.grid.cvmfs
+            tasks_from: install.yml
+
 ## Example Playbook
 
     - hosts: servers

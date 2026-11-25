@@ -1,0 +1,17 @@
+---
+# Cache, configuration and mounts; expects install.yml to have run.
+- name: Configure CVMFS cache
+  ansible.builtin.import_tasks: cache.yml
+  tags: [cvmfs, cache]
+
+- name: Configure CVMFS
+  ansible.builtin.import_tasks: config.yml
+  tags: [cvmfs, config]
+
+- name: Mount CVMFS repositories
+  ansible.builtin.import_tasks: mount.yml
+  tags: [cvmfs, mount]
+
+- name: Test CVMFS
+  ansible.builtin.import_tasks: test.yml
+  tags: [cvmfs, test]

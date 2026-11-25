@@ -1,0 +1,10 @@
+---
+# Repository and packages only: no configuration, no services started.
+# Image builds run this with tasks_from: install and configure.yml at first boot.
+- name: Install and Configure CVMFS repository
+  ansible.builtin.import_tasks: repo.yml
+  tags: [cvmfs, repos]
+
+- name: Install CVMFS client and configuration packages
+  ansible.builtin.import_tasks: packages.yml
+  tags: [cvmfs, packages]

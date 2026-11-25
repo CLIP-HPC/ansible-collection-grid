@@ -4,6 +4,14 @@ clip.grid Release Notes
 
 .. contents:: Topics
 
+v2.3.0
+======
+Release Summary
+---------------
+- Grid, CVMFS, EOSxd: Split the roles into install.yml (repositories and packages, no services) and configure.yml, so image builds can install with tasks_from: install.yml and configure at first boot. main.yml runs both, so existing callers don't change
+- Grid: Install all packages, including fetch-crl and the VOMS RPMs, before writing configuration
+- EOSxd: Check eosxd_mgmt_alias after installing eos-fusex instead of before
+
 v2.2.5
 ======
 Release Summary

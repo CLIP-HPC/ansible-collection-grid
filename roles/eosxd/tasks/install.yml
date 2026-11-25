@@ -1,0 +1,11 @@
+---
+# Repositories and eos-fusex only: needs no eosxd_mgmt_alias, starts no services.
+# Image builds run this with tasks_from: install and configure.yml at first boot.
+- name: Install EOS repository
+  ansible.builtin.import_tasks: repos.yml
+  tags: ['eosxd', 'repos']
+
+- name: Install eos-fusex
+  ansible.builtin.package:
+    name: eos-fusex
+    state: installed

@@ -1,10 +1,5 @@
 ---
-# Configure Fetch-CRL
-
-- name: fetch-crl | Install fetch-crl
-  ansible.builtin.package:
-    name: fetch-crl
-    state: present
+# Configure Fetch-CRL (the package is installed in install.yml)
 
 - name: fetch-crl | Create configuration file
   ansible.builtin.copy:

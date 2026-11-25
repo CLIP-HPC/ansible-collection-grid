@@ -1,0 +1,28 @@
+---
+# Repositories and packages only: no host configuration, no services started.
+# Image builds run this with tasks_from: install and configure.yml at first boot.
+
+- name: Install IGTF Repository and packages
+  ansible.builtin.import_tasks: igtf.yml
+  tags: ["grid", "repos"]
+
+- name: Configure UMD and WLCG repositories
+  ansible.builtin.import_tasks: repos.yml
+  tags: ["grid", "repos"]
+
+- name: Install fetch-crl
+  ansible.builtin.package:
+    name: fetch-crl
+    state: present
+  when: grid_enable_fetch_crl | bool
+  tags: ["grid", "fetch-crl"]
+
+- name: Install VOMS packages
+  ansible.builtin.import_tasks: voms-packages.yml
+  when: not (grid_use_cvmfs_for_voms_certs | bool)
+  tags: ["grid", "voms"]
+
+- name: Install UI/WN packages
+  ansible.builtin.import_tasks: node.yml
+  when: (grid_node_type | default('')) in ['ui', 'wn']
+  tags: ["grid", "node"]

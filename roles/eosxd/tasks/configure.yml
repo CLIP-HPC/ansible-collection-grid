@@ -1,0 +1,35 @@
+---
+# eosxd configuration, keytab and fstab entry; expects install.yml to have run.
+- name: Check variables
+  ansible.builtin.assert:
+    that:
+      - "eosxd_mgmt_alias is defined"
+      - "eosxd_mount_point is defined"
+
+- name: Create config folder
+  ansible.builtin.file:
+    state: directory
+    path: "/etc/eos"
+    mode: "0755"
+
+- name: Configure eosxd
+  ansible.builtin.template:
+    src: fuse.eos.conf
+    dest: /etc/eos/fuse.eos.conf
+    mode: "0644"
+
+- name: Add eos.keytab file
+  ansible.builtin.template:
+    src: eos.keytab.j2
+    dest: "{{ eosxd_sss_keytab_file }}"
+    mode: "0400"
+    owner: root
+    group: root
+
+- name: Add/remove /etc/fstab entry
+  ansible.posix.mount:
+    path: "{{ eosxd_mount_point }}"
+    src: eosxd
+    opts: fsname=eos
+    state: "{{ eosxd_fstab_state }}"
+    fstype: fuse

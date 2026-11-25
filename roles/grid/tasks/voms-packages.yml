@@ -1,0 +1,27 @@
+---
+- name: voms-packages | Install VOMS files
+  vars:
+    grid_voms_package: "wlcg{{ (item == 'belle') | ternary('', '-iam') + '-vomses-' + item }}"
+  ansible.builtin.package:
+    state: installed
+    name: "{{ grid_voms_package }}"
+  loop: "{{ grid_vos }}"
+  when: item in ['alice', 'atlas', 'cms', 'dteam', 'lhcb', 'ops', 'belle']
+
+
+- name: voms-packages | Install VOMS LSC files
+  vars:
+    grid_lsc_package: "wlcg{{ (item == 'belle') | ternary('', '-iam') + '-lsc-' + item }}"
+  ansible.builtin.package:
+    state: installed
+    name: "{{ grid_lsc_package }}"
+  loop: "{{ grid_vos }}"
+  when: item in ['alice', 'atlas','dteam', 'cms', 'lhcb', 'ops', 'belle']
+
+- name: voms-packages | Ensure vomsdir exists
+  ansible.builtin.file:
+    path: /etc/grid-security/vomsdir/belle
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
