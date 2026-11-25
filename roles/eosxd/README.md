@@ -15,6 +15,15 @@ Role Variables
 
 `eosxd_mount_point`: the mount point for eos when using the systemd (`eosxd_fstab`) service (default: /eos)
 
+`eosxd_mount_opts`: mount options of the `/etc/fstab` entry (default: "fsname=eos,_netdev,nofail").
+`_netdev` puts `/eos` under `remote-fs.target` instead of `local-fs.target`, and `nofail` makes the mount
+wanted instead of required, so a failed or hanging EOS mount doesn't put the host into emergency mode.
+Append `x-systemd.mount-timeout=<seconds>` to bound a hanging mount.
+
+With `eosxd_fstab_state: mounted`, changing `eosxd_mount_opts` (also by upgrading from a release before 2.3.1)
+remounts `/eos`, which can hang or interrupt running jobs. To roll the change out without a remount, apply it
+once with `eosxd_fstab_state: present`; the new options take effect at the next reboot or manual remount.
+
 Task Entry Points
 -----------------
 

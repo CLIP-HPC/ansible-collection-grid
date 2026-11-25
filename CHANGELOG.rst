@@ -4,6 +4,13 @@ clip.grid Release Notes
 
 .. contents:: Topics
 
+v2.3.1
+======
+Release Summary
+---------------
+- EOSxd (bugfix): Add eosxd_mount_opts for the /etc/fstab entry, default "fsname=eos,_netdev,nofail". Without _netdev and nofail a failed or hanging /eos mount fails local-fs.target and puts the host into emergency mode
+- EOSxd: With eosxd_fstab_state: mounted, the changed options remount /eos on the next run, which can hang or interrupt running jobs. Apply the upgrade with eosxd_fstab_state: present to defer the change to the next reboot or manual remount
+
 v2.3.0
 ======
 Release Summary
