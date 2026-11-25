@@ -9,7 +9,7 @@ Role Variables
 
 `eosxd_mgmt_alias`: specifies the eos management host (required)
 
-`eosxd_eos_upstream`: to use the upstream EOS repos to install eos-fusex (default: true)
+`eosxd_use_upstream_repos`: to use the upstream EOS repos to install eos-fusex; when false, the upstream repo files are removed (default: true)
 
 `eosxd_fstab_state`: /etc/fstab entry for eos (default: "absent", possible values: present, mounted)
 

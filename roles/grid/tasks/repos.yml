@@ -11,16 +11,34 @@
   when: grid_install_wlcg_repo | bool
   block:
     - name: repos | Import WLCG gpgpkey
+      when: ansible_facts['distribution_major_version'] != '10'
       ansible.builtin.rpm_key:
         state: present
-        key: >-
-          {{
-            (ansible_facts['distribution_major_version'] == '10')
-            | ternary(
-              'http://linuxsoft.cern.ch/wlcg/RPM-GPG-KEY-wlcg-EL10',
-              'http://linuxsoft.cern.ch/wlcg/RPM-GPG-KEY-wlcg'
-            )
-          }}
+        key: http://linuxsoft.cern.ch/wlcg/RPM-GPG-KEY-wlcg
+
+    # EL10.3+ ships an OpenPGP v6 release key. rpm_key pipes every key in the
+    # rpm database through gpg, which cannot parse v6 keys, so it fails for any
+    # key. Import with rpmkeys (Sequoia) instead.
+    - name: repos | Import WLCG gpgpkey (EL10)
+      when: ansible_facts['distribution_major_version'] == '10'
+      block:
+        - name: repos | Download WLCG EL10 gpgkey
+          ansible.builtin.get_url:
+            url: http://linuxsoft.cern.ch/wlcg/RPM-GPG-KEY-wlcg-EL10
+            dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-wlcg-EL10
+            owner: root
+            group: root
+            mode: "0644"
+
+        - name: repos | Import WLCG EL10 gpgkey
+          ansible.builtin.shell: |
+            set -o pipefail
+            before=$(rpm -q gpg-pubkey | sort)
+            rpmkeys --import /etc/pki/rpm-gpg/RPM-GPG-KEY-wlcg-EL10 || exit 1
+            after=$(rpm -q gpg-pubkey | sort)
+            [ "$before" = "$after" ] || echo imported
+          register: grid_wlcg_el10_key_import
+          changed_when: "'imported' in grid_wlcg_el10_key_import.stdout"
 
     - name: repos | Install WLCG release repository
       vars:
@@ -52,3 +70,18 @@
       ansible.builtin.package:
         name: "https://repository.egi.eu/sw/production/umd/5/al9/release/x86_64/umd-release-5.0.0-1.al9.alma.noarch.rpm"
         state: present
+
+
+# Remove the upstream release packages when the repositories are provided
+# elsewhere (e.g. Satellite). Imported GPG keys are left in place.
+- name: repos | Remove WLCG release repository
+  when: not grid_install_wlcg_repo | bool
+  ansible.builtin.package:
+    name: wlcg-repo
+    state: absent
+
+- name: repos | Remove UMD release repository
+  when: not grid_install_umd_repo | bool
+  ansible.builtin.package:
+    name: umd-release
+    state: absent

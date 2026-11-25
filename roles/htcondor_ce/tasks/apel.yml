@@ -37,6 +37,25 @@
         - "{{ htcondor_ce_lrms }}.sh"
         - "condor_ce_blah.sh"
 
+    - name: apel | Configure APEL accounting group map for token jobs
+      ansible.builtin.copy:
+        content: |
+          # Managed by Ansible (clip.grid.htcondor_ce)
+          {% for line in htcondor_ce_apel_acct_group_map %}
+          {{ line }}
+          {% endfor %}
+        dest: /etc/condor/apel_acct_group.map
+        mode: "0644"
+
+    - name: apel | Make the APEL accounting group map available to condor_ce_history
+      ansible.builtin.copy:
+        content: |
+          # Managed by Ansible (clip.grid.htcondor_ce), used by condor_ce_blah.sh
+          TOOL_CLASSAD_USER_MAP_NAMES = $(TOOL_CLASSAD_USER_MAP_NAMES) ApelAGMap
+          CLASSAD_USER_MAPFILE_ApelAGMap = /etc/condor/apel_acct_group.map
+        dest: /etc/condor-ce/config.d/50-apel-acct-group.conf
+        mode: "0644"
+
 - name: apel | Configure APEL sender
   ansible.builtin.copy:
     src: apel/sender.cfg

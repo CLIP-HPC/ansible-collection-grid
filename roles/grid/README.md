@@ -13,22 +13,17 @@ Inspired by the [Ansible Role UMD](https://github.com/EGI-Foundation/ansible-rol
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
-    grid_enable_repo: true
+    grid_install_wlcg_repo: true
 
-Set up the [grid repository](http://repository.egi.eu/category/umd_releases/distribution/umd-4/)
-including [yum priorties](https://wiki.centos.org/PackageManagement/Yum/Priorities).
+Install the [WLCG repository](http://linuxsoft.cern.ch/wlcg/) release package and GPG key.
+Set to `false` when the repository is provided elsewhere (e.g. Satellite); the `wlcg-repo`
+package is then removed (the GPG key is left in place).
 
-    grid_umd_version: 4
+    grid_install_umd_repo: true
 
-UMD version of the repository. Its most likely 4.
-
-    grid_umd_exclude: []
-
-List of packages to exclude from updates or installs.
-
-    grid_umd_includepkgs: []
-
-List of packages you want to only use from the UMD repository.
+Install the [UMD 5 repository](https://repository.egi.eu/sw/production/umd/) release package and GPG keys.
+Set to `false` when the repository is provided elsewhere (e.g. Satellite); the `umd-release`
+package is then removed (the GPG keys are left in place).
 
     grid_enable_certificates: true | false | 'cvmfs'
 

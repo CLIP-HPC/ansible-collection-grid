@@ -2,6 +2,8 @@
 # defaults file for htcondor-ce role
 htcondor_ce_repo_install: true
 htcondor_ce_spool_dir:
+# mode of htcondor_ce_spool_dir, e.g. "0775" if the spool is an NFS volume whose root mode is set by the storage
+htcondor_ce_spool_dir_mode: "0755"
 htcondor_ce_home_dir: /users
 htcondor_ce_job_routes: []
 htcondor_ce_shared_dir: ["{{ htcondor_ce_spool_dir }}", "{{ htcondor_ce_home_dir }}"]
@@ -12,6 +14,9 @@ htcondor_ce_apel_db_password:
 htcondor_ce_apel_site_name:
 htcondor_ce_apel_spec_value: 1.0
 htcondor_ce_apel_spec_type: HEPSPEC
+# Lines of /etc/condor/apel_acct_group.map: map "token issuer,subject" of jobs without a VOMS proxy to an
+# APEL accounting group, e.g. '* /^https\:\/\/cms\-auth\.cern\.ch\// /cms/Role=pilot/Capability=NULL'
+htcondor_ce_apel_acct_group_map: []
 htcondor_ce_mapfiles: []
 htcondor_ce_job_route_file:
 htcondor_ce_release: 25.x

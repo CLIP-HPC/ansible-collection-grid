@@ -68,7 +68,7 @@
     state: directory
     group: condor
     owner: condor
-    mode: "0755"
+    mode: "{{ htcondor_ce_spool_dir_mode }}"
     path: "{{ htcondor_ce_spool_dir }}"
   when:
     - htcondor_ce_spool_dir is defined
