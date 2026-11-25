@@ -69,6 +69,25 @@ Install host certificate. The certificates is provided as hash
 -   key: path to private host key. It should be secured with ansible-vault
 
 
+## Task Entry Points
+
+`main.yml` runs `install.yml` and then `configure.yml`. To install packages in an image
+build and configure at first boot, run them separately with `tasks_from`:
+
+-   `install.yml`: IGTF repository and CA packages, WLCG/UMD repositories, VOMS packages
+    (`grid_vos`), `fetch-crl` and the `wn`/`ui` metapackage with HEP_OSlibs (`grid_node_type`).
+    Starts no services.
+-   `configure.yml`: fetch-crl configuration and timer, VOMS profile and `/etc/vomses` link
+    (`grid_use_cvmfs_for_voms_certs`), host certificate.
+
+Pass the same `grid_enable_fetch_crl`, `grid_use_cvmfs_for_voms_certs`, `grid_vos`,
+`grid_node_type` and repository variables to both.
+
+    - name: Install grid packages
+      ansible.builtin.include_role:
+        name: clip.grid.grid
+        tasks_from: install.yml
+
 ## Example Playbook
 
 Configuration for a server without CVMFS

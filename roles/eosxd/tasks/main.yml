@@ -1,44 +1,7 @@
 ---
 # tasks file for role-eosxd
-- name: Check variables
-  ansible.builtin.assert:
-    that:
-      - "eosxd_mgmt_alias is defined"
-      - "eosxd_mount_point is defined"
-
-- name: Install EOS repository
-  ansible.builtin.import_tasks: repos.yml
-  tags: ['eosxd', 'repos']
-
-- name: Install eos-fusex
-  ansible.builtin.package:
-    name: eos-fusex
-    state: installed
-
-- name: Create config folder
-  ansible.builtin.file:
-    state: directory
-    path: "/etc/eos"
-    mode: "0755"
+- name: Install EOS repository and eos-fusex
+  ansible.builtin.import_tasks: install.yml
 
 - name: Configure eosxd
-  ansible.builtin.template:
-    src: fuse.eos.conf
-    dest: /etc/eos/fuse.eos.conf
-    mode: "0644"
-
-- name: Add eos.keytab file
-  ansible.builtin.template:
-    src: eos.keytab.j2
-    dest: "{{ eosxd_sss_keytab_file }}"
-    mode: "0400"
-    owner: root
-    group: root
-
-- name: Add/remove /etc/fstab entry
-  ansible.posix.mount:
-    path: "{{ eosxd_mount_point }}"
-    src: eosxd
-    opts: fsname=eos
-    state: "{{ eosxd_fstab_state }}"
-    fstype: fuse
+  ansible.builtin.import_tasks: configure.yml

@@ -1,0 +1,17 @@
+---
+# Host configuration and services; expects install.yml to have run.
+
+- name: Configure fetch-crl
+  ansible.builtin.import_tasks: fetch-crl.yml
+  when: grid_enable_fetch_crl | bool
+  tags: ["grid", "fetch-crl"]
+
+- name: Configure VOMS
+  ansible.builtin.import_tasks: voms.yml
+  when: grid_use_cvmfs_for_voms_certs | bool
+  tags: ["grid", "voms"]
+
+- name: Install host certificate
+  ansible.builtin.import_tasks: hostcert.yml
+  when: grid_host_certificate | length > 0
+  tags: ["grid", "certificate"]
