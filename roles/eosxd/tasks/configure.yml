@@ -30,6 +30,6 @@
   ansible.posix.mount:
     path: "{{ eosxd_mount_point }}"
     src: eosxd
-    opts: fsname=eos
+    opts: "{{ eosxd_mount_opts }}"
     state: "{{ eosxd_fstab_state }}"
     fstype: fuse

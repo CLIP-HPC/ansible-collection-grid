@@ -3,6 +3,10 @@
 eosxd_use_upstream_repos: true
 eosxd_mount_point: /eos
 eosxd_fstab_state: "absent"
+# _netdev: remote-fs.target instead of local-fs.target, so a failed /eos mount
+# doesn't drop the host into emergency mode. No nofail: mount.fuse passes it to
+# eosxd, which rejects it and exits, so `mount /eos` silently mounts nothing.
+eosxd_mount_opts: "fsname=eos,_netdev"
 eosxd_shared_mount: 1
 eosxd_krb5: 0
 eosxd_gsi_first: 1
