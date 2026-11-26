@@ -35,7 +35,7 @@ Each role's `README.md` documents its own variables and dependencies; check the 
 ## File structure
 
 - Molecule test fixtures are centralized in `extensions/molecule/` rather than duplicated per role: a shared `inventory/` (with a `containers.yml` group), a shared `config.yml`, and one scenario directory per role (`cvmfs/`, `eosxd/`, `grid/`, `htcondor_ce/`) plus a bare `default/` scenario. When adding a new role or scenario, follow this shared-fixture pattern instead of adding a `molecule/` directory inside the role.
-- CI (`.github/workflows/ci.yml`) delegates entirely to the org-wide reusable workflow `vbc-it/github-action-workflows`, running on a self-hosted runner, and publishes to Automation Hub on success — this repo's workflow file itself has no test logic.
+- CI (`.github/workflows/ci.yml`) delegates entirely to the org-wide reusable workflow `vbc-it/github-action-workflows`, running on a self-hosted runner, and publishes to Automation Hub on success — this repo's workflow file itself has no test logic. It runs on pull requests, pushes to `main`, tags, and a weekly schedule; a newer push to a PR cancels its running CI. Molecule runs the scenarios of changed roles, or of all roles on tags (before publishing), the schedule, `workflow_dispatch`, and changes to shared files (`extensions/molecule/` outside role scenarios, `tests/requirements.yml`, `pyproject.toml`, `uv.lock`). Keep `sanity_ansible_versions` in line with `requires_ansible` in `meta/runtime.yml`.
 
 <!-- agency:managed:start source=templates/ansible/AGENTS.md.tmpl -->
 ## Required routing
